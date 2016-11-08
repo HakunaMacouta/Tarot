@@ -18,8 +18,8 @@ public class MainJavaFX extends Application {
 
 	private ParallelTransition parallelTransition;
 	private ScaleTransition scaleTransition;	
-	private RotateTransition rotateTransition;	
-	private TranslateTransition translateTransition;	
+//	private RotateTransition rotateTransition;	
+//	private TranslateTransition translateTransition;	
 
 	@Override
 	public void start(Stage fenetre) throws Exception {
@@ -36,7 +36,7 @@ public class MainJavaFX extends Application {
 		Image imageExcuse = new Image("file:./ressources/Tarot_nouveau_-_Grimaud_-_1898_-_Trumps_-_Excuse.jpg");
 		ImageView carteExcuse = new ImageView();
 		carteExcuse.setImage(imageExcuse);
-		carteExcuse.setX(-400);
+		carteExcuse.setX(-300);
 		carteExcuse.setY(-1000);
 		carteExcuse.setTranslateZ(50);
 		carteExcuse.setRotate(30);
@@ -46,7 +46,7 @@ public class MainJavaFX extends Application {
 		Image imagePetit = new Image("file:./ressources/Tarot_nouveau_-_Grimaud_-_1898_-_Trumps_-_01.jpg");
 		ImageView cartePetit = new ImageView();
 		cartePetit.setImage(imagePetit);
-		cartePetit.setX(-400);
+		cartePetit.setX(-500);
 		cartePetit.setY(-1000);
 		cartePetit.setTranslateZ(100);
 		cartePetit.setRotate(50);
@@ -71,32 +71,32 @@ public class MainJavaFX extends Application {
 		scaleTransition.setFromY(0.1);
 		scaleTransition.setToX(0.3);
 		scaleTransition.setToY(0.3);
-		scaleTransition.setAutoReverse(true);
-		scaleTransition.setCycleCount(Timeline.INDEFINITE);
+		//scaleTransition.setAutoReverse(true);
+		//scaleTransition.setCycleCount(Timeline.INDEFINITE);
 		// animation 2 : rotation (toutes les cartes)
-		rotateTransition = new RotateTransition(Duration.seconds(30), cartes);
-		rotateTransition.setAxis(new Point3D(100,0,100));
-		rotateTransition.setFromAngle(0);
-		rotateTransition.setToAngle(2160);
-		rotateTransition.setAutoReverse(true);
-		rotateTransition.setCycleCount(Timeline.INDEFINITE);
+//		rotateTransition = new RotateTransition(Duration.seconds(30), cartes);
+//		rotateTransition.setAxis(new Point3D(100,0,100));
+//		rotateTransition.setFromAngle(0);
+//		rotateTransition.setToAngle(2160);
+//		rotateTransition.setAutoReverse(true);
+//		rotateTransition.setCycleCount(Timeline.INDEFINITE);
 		// animation 3 : translation (carte Petit)
-		translateTransition = new TranslateTransition(Duration.seconds(1), cartePetit);
-		translateTransition.setFromZ(200);
-		translateTransition.setToZ(-200);
-		translateTransition.setAutoReverse(true);
-		translateTransition.setCycleCount(Timeline.INDEFINITE);
-		
+//		translateTransition = new TranslateTransition(Duration.seconds(1), cartePetit);
+//		translateTransition.setFromZ(200);
+//		translateTransition.setToZ(-200);
+//		translateTransition.setAutoReverse(true);
+//		translateTransition.setCycleCount(Timeline.INDEFINITE);
+//		
 		// animation globale: toutes en //
 		parallelTransition = new ParallelTransition();
 		parallelTransition.getChildren().addAll(
-				rotateTransition,
-				scaleTransition,
-				translateTransition
+//				rotateTransition,
+				scaleTransition
+//				translateTransition
 				); 
-		parallelTransition.setCycleCount(Timeline.INDEFINITE);
-
-		// go !
+		//parallelTransition.setCycleCount(Timeline.INDEFINITE);
+//
+//		// go !
 		parallelTransition.play();
 	}     
 
