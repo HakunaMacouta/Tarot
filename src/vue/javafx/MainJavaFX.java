@@ -69,8 +69,8 @@ public class MainJavaFX extends Application {
 				new ScaleTransition(Duration.seconds(4), cartes);
 		scaleTransition.setFromX(0.1);
 		scaleTransition.setFromY(0.1);
-		scaleTransition.setToX(0.3);
-		scaleTransition.setToY(0.3);
+		scaleTransition.setToX(0.1);
+		scaleTransition.setToY(0.1);
 		//scaleTransition.setAutoReverse(true);
 		//scaleTransition.setCycleCount(Timeline.INDEFINITE);
 		// animation 2 : rotation (toutes les cartes)
