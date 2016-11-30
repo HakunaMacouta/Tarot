@@ -25,7 +25,7 @@ public enum Values {
 	NINETEEN("19"),
 	TWENTY("20"),
 	TWENTYONE("21"),
-	FOOL("Excuse"),
+	FOOL("The_Fool"),
 	JACK ("Jack"),
 	KNIGHT ("Knight"),
 	QUEEN ("Queen"),

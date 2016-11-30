@@ -1,10 +1,11 @@
 package vue.javafx;
 
 public enum Colors {
-	Spades ("Spades"),
-	Clubs ("Clubs"),
-	Diamonds ("Diamonds"),
-	Hearts("Hearts");
+	SPADES ("Spades"),
+	CLUBS ("Clubs"),
+	DIAMONDS ("Diamonds"),
+	HEARTS("Hearts"),
+	TRUMPS("Trumps");
 	
 	private String name;
 	

@@ -1,43 +1,34 @@
 package vue.javafx;
 import javafx.scene.image.*;
 
-
-public class Card {
-	private static Image img_back = new Image("file:./ressources/back_card.jpg");
-	private static ImageView card_back = new ImageView();
+/**
+ * 
+ * @author Thomas
+ *
+ */
+public class Card extends ImageView {
+	public Image img_back = new Image("file:./ressources/Tarot_back");
+	private Image img_front;
 	private Values value;
 	private Colors color;
-	private Image img_front;
-	private ImageView card_front;
-	
-	public static ImageView getCard_back() {
-		return card_back;
-	}
-
-	public static void setCard_back(ImageView card_back) {
-		Card.card_back = card_back;
-	}
-
-	public ImageView getCard_front() {
-		return card_front;
-	}
-
-	public void setCard_front(ImageView card_front) {
-		this.card_front = card_front;
-	}
-
-	Card(Values v, Colors c) {
+		
+	/**
+	 * 
+	 * @param v, a field from the enum Values 
+	 * @param c, a field from the enum Colors
+	 */
+	Card(Values v, Colors c, double x, double y) {
 		this.value = v;
 		this.color = c;
-		img_front = new Image("file:./ressources/Tarot_nouveau_-_Grimaud_-_1898_-_"+color.toString()+"_-_"+value.toString()+".jpg");
-		card_front = new ImageView();
-		card_front.setImage(img_front);
-		card_back.setImage(img_back);
+		setLayoutX(x);
+		setLayoutY(y);
+		img_front = new Image("file:./ressources/"+color.toString()+"_"+value.toString()+".png");
+		setImage(img_front);
+		setCache(true);
 	}
 	
-	Card(int x) {
-		
+	void setPosition(double x, double y) {
+		setX(x);
+		setY(y);
 	}
-	
-	
 }
