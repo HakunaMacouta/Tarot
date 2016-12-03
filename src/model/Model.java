@@ -1,41 +1,85 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class Model {
-	
+
 	private ArrayList<Joueur> players;
-	private final int INDEX_OF_PLAYER = 0;
+	public static final int INDEX_OF_PLAYER = 0;
 	private Deck deck;
 	private Chien dog;
-	
+
 	public Model(){
-		
+		players = new ArrayList<Joueur>();
+
 		for(int i=0;i<4;i++)
 			players.add(new Joueur());
-		
+
 		deck = new Deck();
 		deck.shuffle();
 		dog = new Chien();
-	    
+
 	}
-	
+
+	public Joueur getPlayer(int id){
+		return players.get(id);
+	}
+
+	public List<Joueur> getPlayers(){
+		return players;
+	}
+
+	public Chien getDog(){
+		return dog;
+	}
+
+	public Deck getDeck(){
+		return deck;
+	}
+
 	public void distribution(){
-		int i = 0, cpt=0, cptChien=0;
+		int i = 0, k=0, cpt=0, cptChien=0;
+
+		// On choisi un tirage aléatoire pour le chien
 		Random r = new Random();
 		ArrayList<Integer> tChien= new ArrayList<Integer>();
-		for(int k=0;k<6;k++){
+		for(k=0;k<6;k++){
 			tChien.add(r.nextInt(70)+1);
+			System.err.println("Nouveau tour du chien : " + tChien.get(k));
 		}
+		k=0;
+		// On realise la distribution
 		while(!deck.isEmpty()){
-			if(cpt==tChien.get(cptChien)){
+			// Si c'est le tour du chien on lui donne une cartes
+			if(tChien.contains(cpt)){
 				dog.addCard(deck.getCard());
 			}
-			players.get(i).addCard(deck.getCard());
-			i = (i+1)%4;
+			else 
+			{
+				// On donne au joueur
+				players.get(i).addCard(deck.getCard());
+				k++;
+				
+				// Changement de joueur toutes les trois cartes
+				if(k%3==0){
+					i = (i+1)%4;
+				}
+			}
+			//carte suivante
 			cpt++;
 		}
 	}
 
+	public boolean isSmalDry(){
+		int i=0;
+		boolean stop=false;
+		while(i<players.size() && !stop){
+			stop = players.get(i).isSmallDry();
+			i++;
+		}
+		return stop;
+		
+	}
 }

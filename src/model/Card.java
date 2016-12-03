@@ -6,6 +6,18 @@ import java.util.List;
 import vue.javafx.Colors;
 import vue.javafx.Values;
 
+
+/**
+ * This class is the default class for every card in the model.
+ * Each card has a color and a value determining the card.
+ * 
+ * 
+ * @author Florent Vain
+ * @version 0.2a
+ * @see Colors
+ * @see Values
+ *
+ */
 public class Card {
 	private Colors color;
 	private Values value;
@@ -78,6 +90,8 @@ public class Card {
 		list.add(new Card(Colors.TRUMPS, Values.NINETEEN));
 		list.add(new Card(Colors.TRUMPS, Values.TWENTY));
 		list.add(new Card(Colors.TRUMPS, Values.TWENTYONE));
+		
+		list.add(new Card(Colors.TRUMPS, Values.FOOL));
 		
 		return list;
 	}

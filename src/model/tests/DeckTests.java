@@ -1,10 +1,13 @@
-package model;
+package model.tests;
 
 import static org.junit.Assert.*;
 
 import java.util.Random;
 
 import org.junit.Test;
+
+import model.Card;
+import model.Deck;
 
 public class DeckTests {
 
@@ -48,7 +51,6 @@ public class DeckTests {
 	public void testGetCardObtention() {
 		
 		Deck d = new Deck();
-		int initSize = d.getCards().size();
 		
 		Card c = d.getCard();
 		

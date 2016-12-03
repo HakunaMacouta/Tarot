@@ -1,9 +1,14 @@
-package model;
+package model.tests;
 
 import static org.junit.Assert.*;
 
+import java.util.List;
+
 import org.junit.Test;
 
+import model.Card;
+import model.Joueur;
+import model.NotInHandException;
 import vue.javafx.Colors;
 import vue.javafx.Values;
 
@@ -11,7 +16,24 @@ public class JoueurTest {
 
 	@Test
 	public void testGetCard() {
-		fail("Not yet implemented");
+		Joueur j = new Joueur();
+		
+		j.addCard(new Card(Colors.CLUBS, Values.ACE));
+		j.addCard(new Card(Colors.HEARTS, Values.THREE));
+		j.addCard(new Card(Colors.TRUMPS, Values.NINETEEN));
+		int initSize = j.getHand().size();
+		
+		try {
+			j.getCard(Colors.TRUMPS, Values.NINETEEN);
+		} catch (NotInHandException e) {
+			fail("Carte pas dans la main");
+		}
+		int finalSize = j.getHand().size();
+		
+		if(finalSize>=initSize){
+			fail("Nombre de carte incorrect après retrait");
+		}
+		
 	}
 
 	@Test
@@ -33,7 +55,15 @@ public class JoueurTest {
 
 	@Test
 	public void testGetHand() {
-		fail("Not yet implemented");
+		Joueur j = new Joueur();
+		
+		j.addCard(new Card(Colors.CLUBS, Values.FIVE));
+		
+		List<Card> cards = j.getHand();
+		
+		if(!cards.equals(j.getHand())){
+			fail();
+		}
 	}
 
 	@Test

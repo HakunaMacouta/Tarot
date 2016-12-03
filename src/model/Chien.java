@@ -18,11 +18,18 @@ public class Chien {
 	}
 	
 	public Card getCard(Colors c, Values v) throws NotInHandException{
-		Card card = new Card(c, v);
-		if(maw.remove(card))
-			return card;
-		else
+		Card card = new Card(c,v);
+		boolean found =false;
+		for(int i = 0; i<maw.size(); i++)
+		{
+			if(maw.get(i).getColor()==card.getColor() && maw.get(i).getValue()==card.getValue()){
+				maw.remove(i);
+				found = true;
+			}	
+		}
+		if(!found)
 			throw new NotInHandException();
+		return card;
 	}
 	
 	public List<Card> getMaw(){

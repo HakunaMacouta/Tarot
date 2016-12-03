@@ -13,10 +13,18 @@ public class Joueur{
 		hand = new ArrayList<Card>();
 	}
 	
-	public Card getCard(Values v, Colors c) throws NotInHandException{
+	public Card getCard(Colors c, Values v) throws NotInHandException{
 		//Create a new card
 		Card card = new Card(c,v);
-		if(!hand.remove(card))
+		boolean found =false;
+		for(int i = 0; i<hand.size(); i++)
+		{
+			if(hand.get(i).getColor()==card.getColor() && hand.get(i).getValue()==card.getValue()){
+				hand.remove(i);
+				found = true;
+			}
+		}
+		if(!found)
 			throw new NotInHandException();
 		return card;
 	}
@@ -43,5 +51,9 @@ public class Joueur{
 			i++;
 		}
 		return isDry;
+	}
+
+	public void sortHand() {
+		hand.sort(null);
 	}
 }
