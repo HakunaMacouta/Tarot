@@ -1,4 +1,9 @@
 package vue.javafx;
+import java.util.ArrayList;
+
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
 import javafx.animation.ParallelTransition;
 import javafx.animation.RotateTransition;
 import javafx.animation.ScaleTransition;
@@ -7,43 +12,50 @@ import javafx.animation.Timeline;
 import javafx.animation.Transition;
 import javafx.animation.TranslateTransition;
 import javafx.application.Application;
+import javafx.beans.binding.DoubleBinding;
 import javafx.geometry.Point3D;
+import javafx.geometry.Pos;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
+import javafx.scene.PerspectiveCamera;
 import javafx.scene.Scene;
+import javafx.scene.SceneAntialiasing;
+import javafx.scene.SubScene;
 import javafx.scene.chart.Axis;
+import javafx.scene.control.Slider;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToolBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundImage;
+import javafx.scene.layout.BackgroundPosition;
+import javafx.scene.layout.BackgroundRepeat;
+import javafx.scene.layout.BackgroundSize;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
 public class MainJavaFX extends Application {
 
-	private ParallelTransition parallelTransition;
-	private ScaleTransition scaleTransition;	
-	private RotateTransition rotateTransition;	
-	private TranslateTransition translateTransition;	
-
-	
-	public Transition flipCard(Card c) {
-		RotateTransition ro = new RotateTransition(Duration.seconds(5),c);
-		ro.setAxis(new Point3D(0,100,0));
-		ro.setFromAngle(0);
-		ro.setToAngle(90);
-		c.setImage(c.img_back);
-		RotateTransition ru = new RotateTransition(Duration.seconds(5),c);
-		ru.setAxis(new Point3D(0,100,0));
-		ru.setFromAngle(-90);
-		ru.setToAngle(0);
-		return new SequentialTransition(ro,ru);
-	}
+	private final Duration halfFlipDuration = Duration.seconds(1);
 	@Override
 	public void start(Stage fenetre) throws Exception {
+		/*
 		// objet graphique : carte 21
-		Card normal = new Card(Values.ONE, Colors.TRUMPS,
+		Card normal = new Card(,
 				50,0);
+		ImageView back = new ImageView();
+		back.setImage(normal.img_back);
+		Group carte = new Group(normal,back);
+		back.setVisible(false);
+		normal.setRotationAxis(Rotate.Y_AXIS);
 		
-		/****EXEMPLE****/
+		
+		/****EXEMPLE***
 //		Image image21 = new Image("file:./ressources/Tarot_nouveau_-_Grimaud_-_1898_-_Trumps_-_21.jpg");
 //		ImageView carte21 = new ImageView();
 //		carte21.setImage(image21);
@@ -55,7 +67,8 @@ public class MainJavaFX extends Application {
 		// scene graphique
 		fenetre.setTitle("Let's play Tarot !");
 		Group cartes = new Group();
-		Scene plateau = new Scene(cartes,1024,768);
+		Scene plateau = new Scene(carte,1024,768);
+		//plateau.setCamera(new PerspectiveCamera());
 		plateau.setFill(Color.BLACK);
 		//cartes.getChildren().add(trump);
 		cartes.getChildren().add(normal);
@@ -102,6 +115,66 @@ public class MainJavaFX extends Application {
 //
 //		// go !
 		parallelTransition.play();
+		*/
+		BackgroundImage background = new BackgroundImage(new Image("file:./ressources/Tarot_Background.jpg"), BackgroundRepeat.REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT);
+		Background b = new Background(background);
+		
+		ArrayList<Card> cards = new ArrayList<Card>();
+		double x = 0;
+		
+		for (Colors c : Colors.values()) {
+			if(c == Colors.TRUMPS){
+				for (Values v : Values.getValues(false)) {
+					cards.add(new Card(v,c, x,50));
+					x+=20;
+				}
+			}
+			else {
+				for(Values v : Values.getValues(true)) {
+					cards.add(new Card(v,c, x,50));
+					x+=20;	
+				}
+			}
+			
+		}
+		Card card = new Card(Values.ONE, Colors.TRUMPS,200,200);
+		
+        final StackPane stackPane = new StackPane();
+        stackPane.getChildren().addAll(card);
+        stackPane.setBackground(b);
+        stackPane.setAlignment(Pos.TOP_LEFT);
+        final SubScene subScene = new SubScene(stackPane, 1600, 900, false, SceneAntialiasing.BALANCED); 
+        subScene.setCamera(new PerspectiveCamera()); 
+        final ToggleButton playButton = new ToggleButton("Play"); 
+        StackPane.setAlignment(playButton, Pos.TOP_LEFT); 
+        final ToolBar toolBar = new ToolBar(); 
+        toolBar.getItems().addAll(playButton); 
+        final BorderPane root = new BorderPane(); 
+        root.setTop(toolBar); 
+        root.setBottom(subScene); 
+        
+        
+        
+        final Scene scene = new Scene(root, 1600, 900); 
+        fenetre.setTitle("Dishonored Tarot"); 
+        fenetre.setScene(scene); 
+        fenetre.show(); 
+        SequentialTransition flips = new SequentialTransition();
+        Animation a = card.halfRotateAnimation();
+        for(Card c : cards) {
+        	flips.getChildren().add(c.getRotateCard());
+        }
+        //animation.setCycleCount(SequentialTransition.INDEFINITE); 
+        playButton.selectedProperty().addListener((observableValue, oldValue, newValue) -> { 
+            if (newValue) { 
+                //flips.play(); 
+                a.play();
+              
+            } else { 
+                //flips.pause();
+                a.pause();
+            } 
+        }); 
 	}     
 
 	public static void main(String[] args) {
