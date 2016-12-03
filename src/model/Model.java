@@ -40,16 +40,10 @@ public class Model {
 	}
 
 	public void distribution(){
-		int i = 0, k=0, cpt=0, cptChien=0;
+		int i = 0, k=0, cpt=0;
 
 		// On choisi un tirage aléatoire pour le chien
-		Random r = new Random();
-		ArrayList<Integer> tChien= new ArrayList<Integer>();
-		for(k=0;k<6;k++){
-			tChien.add(r.nextInt(70)+1);
-			System.err.println("Nouveau tour du chien : " + tChien.get(k));
-		}
-		k=0;
+		ArrayList<Integer> tChien = randomTurnDog();
 		// On realise la distribution
 		while(!deck.isEmpty()){
 			// Si c'est le tour du chien on lui donne une cartes
@@ -61,7 +55,6 @@ public class Model {
 				// On donne au joueur
 				players.get(i).addCard(deck.getCard());
 				k++;
-				
 				// Changement de joueur toutes les trois cartes
 				if(k%3==0){
 					i = (i+1)%4;
@@ -70,6 +63,19 @@ public class Model {
 			//carte suivante
 			cpt++;
 		}
+	}
+
+	/**
+	 * @return
+	 */
+	private ArrayList<Integer> randomTurnDog() {
+		int k;
+		Random r = new Random();
+		ArrayList<Integer> tChien= new ArrayList<Integer>();
+		for(k=0;k<6;k++){
+			tChien.add(r.nextInt(70)+1);
+		}
+		return tChien;
 	}
 
 	public boolean isSmalDry(){

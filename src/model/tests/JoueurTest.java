@@ -2,6 +2,7 @@ package model.tests;
 
 import static org.junit.Assert.*;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.Test;
@@ -89,6 +90,30 @@ public class JoueurTest {
 		
 		if(!j.isSmallDry())
 			fail();
+		
+	}
+	
+	@Test
+	public void testSortingPlayerHand(){
+		Joueur j = new Joueur();
+		
+		j.addCard(new Card(Colors.HEARTS, Values.THREE));
+		j.addCard(new Card(Colors.HEARTS, Values.FOUR));
+		j.addCard(new Card(Colors.SPADES, Values.ACE));
+		j.addCard(new Card(Colors.SPADES, Values.KING));
+		j.addCard(new Card(Colors.DIAMONDS, Values.KING));
+		j.addCard(new Card(Colors.TRUMPS, Values.EIGHT));
+		j.addCard(new Card(Colors.TRUMPS, Values.THREE));
+		j.addCard(new Card(Colors.TRUMPS, Values.FIVE));
+		j.addCard(new Card(Colors.TRUMPS, Values.FOOL));
+		
+		Collections.shuffle(j.getHand());
+		
+		j.sortHand();
+		
+		
+		
+		
 		
 	}
 

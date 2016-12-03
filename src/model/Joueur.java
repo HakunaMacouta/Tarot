@@ -40,6 +40,7 @@ public class Joueur{
 	public boolean isSmallDry(){
 		boolean hasSmall=false, isDry=false, end=false;
 		int i = 0;
+		
 		while(i<hand.size() && !end){
 			if(hand.get(i).getColor()==Colors.TRUMPS && hand.get(i).getValue()==Values.ONE && !hasSmall){
 				hasSmall = isDry = true;
@@ -50,6 +51,7 @@ public class Joueur{
 			}
 			i++;
 		}
+		
 		return isDry;
 	}
 

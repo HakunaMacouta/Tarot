@@ -1,6 +1,7 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import vue.javafx.Colors;
@@ -18,13 +19,31 @@ import vue.javafx.Values;
  * @see Values
  *
  */
-public class Card {
+public class Card implements Comparator<Card>{
 	private Colors color;
 	private Values value;
 
 	public Card(Colors c, Values v) {
 		this.color = c;
 		this.value = v;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+	 */
+	@Override
+	public int compare(Card arg0, Card arg1) {
+		
+		if(arg0==null && arg1==null){
+			throw new NullPointerException();
+		}
+		int fComp = Integer.compare(arg0.getColor().getPower(), arg1.getColor().getPower());
+		if(fComp==0)
+		{
+			int sComp = Integer.compare(arg0.getValue().getPower(), arg1.getValue().getPower());
+			return sComp;
+		}
+		return fComp;
 	}
 
 	public Colors getColor() {
