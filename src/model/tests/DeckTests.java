@@ -8,6 +8,8 @@ import org.junit.Test;
 
 import model.Card;
 import model.Deck;
+import Enums.Colors;
+import Enums.Values;
 
 public class DeckTests {
 
@@ -78,6 +80,22 @@ public class DeckTests {
 			if(c2 == k.getCards().get(CARD_TWO))
 				if (c3 == k.getCards().get(CARD_THREE))
 					fail();
+	}
+	
+	@Test
+	public void testDeckUnicity(){
+		Deck k = new Deck();
+		Card c = new Card(Colors.TRUMPS,Values.FOOL);
+		
+		for(int i=0;i<k.getCards().size();i++){
+			for(int j=0;j<k.getCards().size();j++){
+				if(i!=j){
+					if(c.compare(k.getCards().get(i), k.getCards().get(j))==0){
+						fail("Carte existe en double");
+					}
+				}
+			}
+		}
 	}
 
 	@Test

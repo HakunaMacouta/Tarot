@@ -19,7 +19,7 @@ import Enums.Values;
  * @see Values
  *
  */
-public class Card implements Comparator<Card>{
+public class Card implements Comparator<Card>, Comparable<Card>{
 	private Colors color;
 	private Values value;
 
@@ -44,6 +44,10 @@ public class Card implements Comparator<Card>{
 			return sComp;
 		}
 		return fComp;
+	}
+	
+	public int compareTo(Card arg0) {
+		return compare(this, arg0);
 	}
 
 	public Colors getColor() {

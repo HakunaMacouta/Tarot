@@ -1,8 +1,10 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 public class Model {
 
@@ -43,7 +45,7 @@ public class Model {
 		int i = 0, k=0, cpt=0;
 
 		// On choisi un tirage aléatoire pour le chien
-		ArrayList<Integer> tChien = randomTurnDog();
+		Set<Integer> tChien = randomTurnDog();
 		// On realise la distribution
 		while(!deck.isEmpty()){
 			// Si c'est le tour du chien on lui donne une cartes
@@ -68,12 +70,12 @@ public class Model {
 	/**
 	 * @return
 	 */
-	private ArrayList<Integer> randomTurnDog() {
+	private Set<Integer> randomTurnDog() {
 		int k;
 		Random r = new Random();
-		ArrayList<Integer> tChien= new ArrayList<Integer>();
+		Set<Integer> tChien= new HashSet<Integer>();
 		for(k=0;k<6;k++){
-			tChien.add(r.nextInt(70)+1);
+			while(!tChien.add(r.nextInt(70)+1));
 		}
 		return tChien;
 	}

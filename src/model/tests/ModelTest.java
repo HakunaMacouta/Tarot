@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+import model.Deck;
 import model.Model;
 
 public class ModelTest {
@@ -34,9 +35,18 @@ public class ModelTest {
 				fail("Main du joueur " + i + " vide");
 			}
 			if(m.getPlayer(i).getHand().size() != 18){
-				fail("Nombre de carte incorrecte Joueur " + i);
+				fail("Nombre de carte incorrecte Joueur " + i +" "+ m.getPlayer(i).getHand().size() );
 			}
 		}
+	}
+	
+	@Test
+	public void testDistribution_HandsUnicity(){
+		Model m = new Model();
+
+		m.distribution();
+		
+		Deck k = m.getDeck();
 	}
 
 }
