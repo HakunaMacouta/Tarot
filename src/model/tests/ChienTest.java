@@ -6,11 +6,11 @@ import java.util.List;
 
 import org.junit.Test;
 
+import Enums.Colors;
+import Enums.Values;
 import model.Card;
 import model.Chien;
 import model.NotInHandException;
-import vue.javafx.Colors;
-import vue.javafx.Values;
 
 public class ChienTest {
 

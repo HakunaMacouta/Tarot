@@ -1,12 +1,13 @@
 package vue.javafx;
+
+import Enums.Colors;
+import Enums.Values;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.RotateTransition;
 import javafx.animation.Timeline;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Point3D;
+import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.image.*;
@@ -26,23 +27,24 @@ public class Card extends Group {
 	private Colors color;
 	private Timeline rotateCard;
 	private RotateTransition rotateZ;
-	
-	private final static Duration halfFlipDuration = Duration.seconds(0.1);
+	private double mouseX, mouseY;
+	private final static Duration halfFlipDuration = Duration.millis(50);
 	/**
 	 * 
 	 * @param v, a field from the enum Values 
 	 * @param c, a field from the enum Colors
 	 */
+	
 	Card(Values v, Colors c, double x, double y) {
 		this.value = v;
 		this.color = c;
 		setLayoutX(x);
 		setLayoutY(y);
-		setScaleX(0.4);
-		setScaleY(0.4);
+		setScaleX(0.6);
+		setScaleY(0.6);
 
 		front_card = new ImageView();
-		front_card.setImage(new Image("file:./ressources/Tarot_"+color.toString()+"_"+value.toString()+".png"));
+		front_card.setImage(new Image("file:./ressources/Tarot_"+value.toString()+"_"+color.toString()+".png"));
 		back_card = new ImageView();
 		back_card.setImage(img_back);
 		front_card.setVisible(false);
@@ -57,6 +59,32 @@ public class Card extends Group {
 //		rotateZ.setFromAngle(0);
 //		rotateZ.setToAngle(-50);
 //		rotateZ.play();
+		this.setOnMouseEntered(event -> {
+			if(front_card.isVisible()) {
+		        this.setCursor(Cursor.OPEN_HAND);
+		        setScaleX(0.8);
+		        setScaleY(0.8);
+			}
+	    });
+		
+		this.setOnMouseExited(event -> {
+			setScaleX(0.6);
+			setScaleY(0.6);
+		});
+		
+		this.setOnMousePressed(event -> {
+            mouseX = event.getSceneX() ;
+            mouseY = event.getSceneY() ;
+            this.toFront();
+        });
+		
+		setOnMouseDragged(event -> {
+            double deltaX = event.getSceneX() - mouseX ;
+            double deltaY = event.getSceneY() - mouseY ;
+            relocate(getLayoutX() + deltaX, getLayoutY() + deltaY);
+            mouseX = event.getSceneX() ;
+            mouseY = event.getSceneY() ;
+         });
 	}
 	
 	void setPosition(double x, double y) {
@@ -79,7 +107,7 @@ public class Card extends Group {
 	
 	public Timeline fullRotateAnimation() {
 		return new Timeline( 
-                new KeyFrame(Duration.ZERO, new KeyValue(super.rotateProperty(), -20)), 
+                new KeyFrame(Duration.ZERO, new KeyValue(super.rotateProperty(), 0)), 
                 new KeyFrame(halfFlipDuration.multiply(1), actionEvent -> { 
                     front_card.setVisible(true); 
                     back_card.setVisible(false);
@@ -95,4 +123,6 @@ public class Card extends Group {
 	public Timeline getRotateCard() {
 		return rotateCard;
 	}
+	
+	
 }

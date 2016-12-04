@@ -1,18 +1,18 @@
-package vue.javafx;
+package Enums;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public enum Values {
-	ONE ("01",1),
-	TWO ("02",2),
-	THREE ("03",3),
-	FOUR ("04",4),
-	FIVE ("05",5),
-	SIX ("06",6),
-	SEVEN ("07",7),
-	EIGHT ("08",8),
-	NINE ("09",9),
+	ONE ("1",1),
+	TWO ("2",2),
+	THREE ("3",3),
+	FOUR ("4",4),
+	FIVE ("5",5),
+	SIX ("6",6),
+	SEVEN ("7",7),
+	EIGHT ("8",8),
+	NINE ("9",9),
 	TEN ("10",10),
 	ELEVEN("11",11),
 	TWELVE("12",12),
@@ -25,12 +25,12 @@ public enum Values {
 	NINETEEN("19",19),
 	TWENTY("20",20),
 	TWENTYONE("21",21),
-	FOOL("The_Fool",1000),
-	JACK ("Jack",11),
-	KNIGHT ("Knight",12),
-	QUEEN ("Queen",13),
-	KING ("King",14),
-	ACE ("Ace",1);
+	FOOL("fool",1000),
+	JACK ("jack",11),
+	KNIGHT ("commoner",12),
+	QUEEN ("queen",13),
+	KING ("king",14),
+	ACE ("1",1);
 	
 	
 	private String name;

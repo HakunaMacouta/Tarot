@@ -1,5 +1,4 @@
-package vue.javafx;
-
+package Enums;
 public enum Colors {
 	CLUBS ("rats",1),
 	DIAMONDS ("swords",2),

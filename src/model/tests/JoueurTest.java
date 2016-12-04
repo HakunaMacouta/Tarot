@@ -7,11 +7,11 @@ import java.util.List;
 
 import org.junit.Test;
 
+import Enums.Colors;
+import Enums.Values;
 import model.Card;
 import model.Joueur;
 import model.NotInHandException;
-import vue.javafx.Colors;
-import vue.javafx.Values;
 
 public class JoueurTest {
 

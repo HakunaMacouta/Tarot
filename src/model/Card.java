@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import vue.javafx.Colors;
-import vue.javafx.Values;
+import Enums.Colors;
+import Enums.Values;
 
 
 /**

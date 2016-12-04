@@ -3,8 +3,8 @@ package model;
 import java.util.ArrayList;
 import java.util.List;
 
-import vue.javafx.Colors;
-import vue.javafx.Values;
+import Enums.Colors;
+import Enums.Values;
 
 public class Chien {
 	private List<Card> maw;
