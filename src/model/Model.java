@@ -12,8 +12,11 @@ public class Model {
 	public static final int INDEX_OF_PLAYER = 0;
 	private Deck deck;
 	private Chien dog;
+	
+	private GameState state;
 
 	public Model(){
+		state = GameState.NOT_INITIALIZED;
 		players = new ArrayList<Joueur>();
 
 		for(int i=0;i<4;i++)
@@ -80,7 +83,7 @@ public class Model {
 		return tChien;
 	}
 
-	public boolean isSmalDry(){
+	public boolean isSmallDry(){
 		int i=0;
 		boolean stop=false;
 		while(i<players.size() && !stop){
@@ -89,5 +92,9 @@ public class Model {
 		}
 		return stop;
 		
+	}
+	
+	public GameState getGameState(){
+		return state;
 	}
 }
