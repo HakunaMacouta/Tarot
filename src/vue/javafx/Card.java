@@ -26,6 +26,7 @@ public class Card extends Group {
 	private Values value;
 	private Colors color;
 	private Timeline rotateCard;
+	private Rotate rotateAxisX, rotateAxisY;
 	private RotateTransition rotateZ;
 	private double mouseX, mouseY;
 	private final static Duration halfFlipDuration = Duration.millis(50);
@@ -42,6 +43,12 @@ public class Card extends Group {
 		setLayoutY(y);
 		setScaleX(0.6);
 		setScaleY(0.6);
+		setManaged(false);
+		rotateAxisX = new Rotate(120,Rotate.X_AXIS);
+		getTransforms().add(rotateAxisX);
+		rotateAxisY = new Rotate(0,100,100,0,Rotate.Y_AXIS);
+		getTransforms().add(rotateAxisY);
+		
 
 		front_card = new ImageView();
 		front_card.setImage(new Image("file:./ressources/Tarot_"+value.toString()+"_"+color.toString()+".png"));
@@ -73,12 +80,13 @@ public class Card extends Group {
 		});
 		
 		this.setOnMousePressed(event -> {
+			System.err.println(event.getSceneX());
             mouseX = event.getSceneX() ;
             mouseY = event.getSceneY() ;
             this.toFront();
         });
 		
-		setOnMouseDragged(event -> {
+		this.setOnMouseDragged(event -> {
             double deltaX = event.getSceneX() - mouseX ;
             double deltaY = event.getSceneY() - mouseY ;
             relocate(getLayoutX() + deltaX, getLayoutY() + deltaY);
@@ -91,9 +99,9 @@ public class Card extends Group {
 		setLayoutX(x);
 		setLayoutY(y);
 	}
-	public Timeline halfRotateAnimation() {
+	private Timeline halfRotateAnimation() {
 		return new Timeline( 
-                new KeyFrame(Duration.ZERO, new KeyValue(super.rotateProperty(), 0)), 
+                new KeyFrame(Duration.ZERO, new KeyValue(rotateAxisY.angleProperty(), 0)), 
                 new KeyFrame(halfFlipDuration.multiply(2), actionEvent -> { 
                     front_card.setVisible(!front_card.isVisible()); 
                     back_card.setVisible(!back_card.isVisible());
@@ -102,24 +110,9 @@ public class Card extends Group {
 //                    front_card.setVisible(false); 
 //                    back_card.setVisible(true); 
 //                }), 
-                new KeyFrame(halfFlipDuration.multiply(4), new KeyValue(super.rotateProperty(), 180)));
+                new KeyFrame(halfFlipDuration.multiply(4), new KeyValue(rotateAxisY.angleProperty(), 180)));
 	}
 	
-	public Timeline fullRotateAnimation() {
-		return new Timeline( 
-                new KeyFrame(Duration.ZERO, new KeyValue(super.rotateProperty(), 0)), 
-                new KeyFrame(halfFlipDuration.multiply(1), actionEvent -> { 
-                    front_card.setVisible(true); 
-                    back_card.setVisible(false);
-                }), 
-                new KeyFrame(halfFlipDuration.multiply(3), actionEvent -> { 
-                    front_card.setVisible(false); 
-                    back_card.setVisible(true); 
-                }), 
-                new KeyFrame(halfFlipDuration.multiply(4), new KeyValue(super.rotateProperty(), 180)));
-
-	}
-
 	public Timeline getRotateCard() {
 		return rotateCard;
 	}
