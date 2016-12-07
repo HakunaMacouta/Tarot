@@ -2,6 +2,8 @@ package model.tests;
 
 import static org.junit.Assert.*;
 
+import java.util.List;
+
 import org.junit.Test;
 
 import model.Deck;
@@ -47,6 +49,24 @@ public class ModelTest {
 		m.distribution();
 		
 		Deck k = m.getDeck();
+	}
+	
+	@Test
+	public void testDistributionOrder(){
+		Model m = new Model();
+		
+		m.distribution();
+		List<Integer> testOrder = m.getDistributionOrder();
+		
+		if(testOrder.size() != 78){
+			fail("Ordre de distribution contient un trop grand nombre de distribution");
+		}
+		
+		for(Integer i : testOrder){
+			if(i != -1 && i!= 0 && i!= 1 && i!=2 && i!=3)
+				fail("Valeur de joueur incorrect");
+		}
+		
 	}
 
 }

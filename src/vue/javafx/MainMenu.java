@@ -106,6 +106,7 @@ public class MainMenu extends Scene {
 		playButton.setOnAction(event -> {
         	boolean fc = fenetre.isFullScreen();
 			playButton.playClickSound();
+			//((GameScene) MainJavaFX.scenes.get(MainJavaFX.GAME_INDEX)).reset();
         	fenetre.setScene(MainJavaFX.scenes.get(MainJavaFX.GAME_INDEX));
         	if(fc)
         			fenetre.setFullScreen(true);

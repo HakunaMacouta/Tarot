@@ -68,7 +68,6 @@ public class MainJavaFX extends Application {
 	public void start(Stage fenetre) throws Exception {
 		
 		scenes=new ArrayList<Scene>();
-		fenetre.setFullScreen(true);
 		fenetre.setResizable(false);
 		controler = Controler.activeControler;
 		
@@ -85,9 +84,9 @@ public class MainJavaFX extends Application {
 		
 		
 		fenetre.setTitle("Dishonored Tarot");
-        fenetre.setScene(menuScene); 
+        fenetre.setScene(menuScene);
         fenetre.getIcons().add(new Image("file:./ressources/Tarot_faticon.png"));
-        fenetre.show(); 
+        fenetre.show();
         
 	}     
 

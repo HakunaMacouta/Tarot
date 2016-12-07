@@ -1,6 +1,7 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
@@ -14,10 +15,12 @@ public class Model {
 	private Chien dog;
 	
 	private GameState state;
+	private List<Integer> distribOrder;
 
 	public Model(){
 		state = GameState.NOT_INITIALIZED;
 		players = new ArrayList<Joueur>();
+		distribOrder = new ArrayList<Integer>();
 
 		for(int i=0;i<4;i++)
 			players.add(new Joueur());
@@ -45,41 +48,58 @@ public class Model {
 	}
 
 	public void distribution(){
-		int i = 0, k=0, cpt=0;
-
+		int i = 0, k=0, cpt=0, cptChien=0;
+		boolean playerTurnDoing=true;
+		Random r = new Random();
 		// On choisi un tirage aléatoire pour le chien
-		Set<Integer> tChien = randomTurnDog();
+		List<Integer> tChien = randomTurnDog();
 		// On realise la distribution
 		while(!deck.isEmpty()){
 			// Si c'est le tour du chien on lui donne une cartes
-			if(tChien.contains(cpt)){
-				dog.addCard(deck.getCard());
+			if(cptChien<tChien.size() && tChien.get(cptChien)<=cpt && !playerTurnDoing){
+				int v = r.nextInt(2)+1;
+				for(int c=0;c<v;c++){
+					if(dog.getMaw().size()<6){
+						dog.addCard(deck.getCard());
+						distribOrder.add(-1);
+						cptChien++;
+						cpt++;
+					}
+				}
 			}
 			else 
 			{
+				playerTurnDoing=true;
 				// On donne au joueur
 				players.get(i).addCard(deck.getCard());
+				distribOrder.add(i);
 				k++;
 				// Changement de joueur toutes les trois cartes
 				if(k%3==0){
 					i = (i+1)%4;
+					playerTurnDoing=false;
 				}
+
+				//carte suivante
+				cpt++;
 			}
-			//carte suivante
-			cpt++;
 		}
 	}
 
+	public List<Integer> getDistributionOrder(){
+		return distribOrder;
+	}
 	/**
 	 * @return
 	 */
-	private Set<Integer> randomTurnDog() {
+	private List<Integer> randomTurnDog() {
 		int k;
 		Random r = new Random();
-		Set<Integer> tChien= new HashSet<Integer>();
+		List<Integer> tChien= new ArrayList<Integer>();
 		for(k=0;k<6;k++){
 			while(!tChien.add(r.nextInt(70)+1));
 		}
+		Collections.sort(tChien);
 		return tChien;
 	}
 
