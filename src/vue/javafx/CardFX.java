@@ -456,5 +456,12 @@ public class CardFX extends Group {
 	public Timeline getRotateCard() {
 		return rotateCard;
 	}
+
+	
+	public Timeline sortAnimation(int k) {
+		return new Timeline(
+				new KeyFrame(Duration.ZERO, new KeyValue(super.layoutXProperty(),0)),
+				new KeyFrame(Duration.millis(800), new KeyValue(super.layoutXProperty(),(k*50))));
+	}
 	
 }

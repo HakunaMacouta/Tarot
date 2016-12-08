@@ -50,6 +50,7 @@ public class GameScene extends Scene {
     private SequentialTransition spread = new SequentialTransition();
     private SequentialTransition spread_n_flip = new SequentialTransition();
     private SequentialTransition distrib = new SequentialTransition();
+    private SequentialTransition sort = new SequentialTransition();
     
     private CardFX movingCardFX;
 	private boolean isDragging=false;
@@ -156,7 +157,9 @@ public class GameScene extends Scene {
             	spread_n_flip.getChildren().addAll(c.getMoveLeft(k),c.getRotateCard());
             	k++;
             }
+            SortAnimations();
             //spread_n_flip.getChildren().addAll(spread,flip);
+            spread_n_flip.getChildren().add(sort);
             spread_n_flip.play();
         });
         
@@ -184,15 +187,18 @@ public class GameScene extends Scene {
         	spread_n_flip.play();
         });
 	}
-	private Timeline SortAnimations() {
+	private void SortAnimations() {
+		int k = 1;
 		for(model.Card c : Controler.activeControler.getModel().getPlayer(0).getHand()) {
-			
+			for( CardFX fx : playerHand) {
+				if(fx.getValue() == c.getValue() && fx.getColor() == c.getColor()) {
+					sort.getChildren().add(fx.sortAnimation(k));
+				}
+			}
+//			System.out.println("Model : "+c.getValue().toString()+" "+c.getColor().toString());
+//			System.out.println("Vue   : "+playerHand.get(i).getValue().toString()+" "+playerHand.get(i).getColor().toString());
+			k++;
 		}
-		List<model.Card> mc = Controler.activeControler.getModel().getPlayer(0).getHand();
-		for(int i = 0; i<mc.size();i++) {
-		}
-		return null;
-
 	}
 	
 	private boolean validDogPosition(double sourceX2, double sourceY2) {
