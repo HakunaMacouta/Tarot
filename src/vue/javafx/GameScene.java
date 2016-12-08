@@ -51,6 +51,12 @@ public class GameScene extends Scene {
     private SequentialTransition flips = new SequentialTransition();
     private SequentialTransition moves = new SequentialTransition();
     private SequentialTransition distrib = new SequentialTransition();
+    
+    private CardFX movingCardFX;
+	private boolean isDragging;
+	private double sourceX;
+	private double sourceY;
+	private Object handToMaw;
 	
     
 	
@@ -86,8 +92,9 @@ public class GameScene extends Scene {
 				}
 			}
 		}*/
+		
 		double x = 670;
-		double y = 250;
+		double y = 300;
 		for (model.Card cm : Controler.activeControler.getModel().getDeck().getCards()) {
 			cards.add(new CardFX(cm.getValue(),cm.getColor(),x,y));
 			x -= 0.05;
@@ -140,7 +147,7 @@ public class GameScene extends Scene {
     	        		b=!b;
     	        	u++;
     	        }
-        		distrib.play();
+    	        distrib.play();
         });
         
         backMenuButton.setOnAction(event ->{
@@ -149,8 +156,35 @@ public class GameScene extends Scene {
         	if(fc)
         		fenetre.setFullScreen(true);
         });
+        
+        this.setOnMouseClicked(event ->{
+        	if(event.getSource() instanceof CardFX){
+        		movingCardFX = (CardFX) event.getSource();
+        		isDragging = true;
+        		sourceX = event.getSceneX();
+        		sourceY = event.getSceneY();
+        		handToMaw = !validDogPosition(sourceX, sourceY);
+        	}
+        });
+        
+        this.setOnMouseDragReleased(event ->{
+        	if(isDragging){
+        		isDragging = false;
+        		if(validDogPosition(event.getSceneX(), event.getSceneY())){
+        			dogMaw.add(movingCardFX);
+        			playerHand.remove(movingCardFX);
+        		}
+        	}
+        });
 	}
 	
+	private boolean validDogPosition(double sourceX2, double sourceY2) {
+		return sourceX2 >= 1000
+				&& sourceY2<=300 
+				&& sourceX2 <= 1550
+				&& sourceY2 >= 50;
+	}
+
 	private void initializeDistribution() {
 		List<Integer> l = Controler.activeControler.getModel().getDistributionOrder();
 		for(int i : l) {
@@ -164,10 +198,10 @@ public class GameScene extends Scene {
 				//c.toFront();
 				break;
 			case 1:
-				//c.setRotate(10);
+				//c.setHorizontal();
 				break;
 			case 2:
-				//c.setRotate(10);
+				//c.setHorizontal();
 				break;
 			case 3:
 				
