@@ -25,12 +25,22 @@ public class CardFX extends Group {
 	private ImageView front_card;
 	private ImageView back_card;
 	private Values value;
+	
+	public Values getValue() {
+		return value;
+	}
 	private Colors color;
+	public Colors getColor() {
+		return color;
+	}
+
+	
 	private Timeline rotateCard, moveRight;
 	private Rotate rotateAxisX, rotateAxisY, rotateAxisZ;
 	private RotateTransition rotateZ;
 	private double mouseX, mouseY;
-	private final static Duration halfFlipDuration = Duration.millis(25);
+	private final static Duration halfFlipDuration = Duration.millis(200);
+	private final static Duration distribDuration = Duration.millis(50);
 	private final static Duration moveSemiFlipFromDeckDuration = Duration.millis(100);
 	
 	private final double zoomScale = 0.2;
@@ -86,7 +96,8 @@ public class CardFX extends Group {
 		getTransforms().add(rotateAxisX);
 		rotateAxisY = new Rotate(0,100,100,0,Rotate.Y_AXIS);
 		getTransforms().add(rotateAxisY);
-		rotateAxisZ = new Rotate(90,Rotate.Z_AXIS);
+		rotateAxisZ = new Rotate(0,100,100,0,Rotate.Z_AXIS);
+		getTransforms().add(rotateAxisZ);
 		
 		
 
@@ -132,17 +143,17 @@ public class CardFX extends Group {
         });
 		
 		this.setOnMouseDragged(event -> {
-            double deltaX = event.getSceneX() - mouseX ;
-            double deltaY = event.getSceneY() - mouseY ;
-            
-            relocate(getLayoutX() + deltaX, getLayoutY() + deltaY);
-            mouseX = event.getSceneX() ;
-            mouseY = event.getSceneY() ;
-         
-            //setScaleX(calculateScaleX());
-            //setScaleY(calculateScaleY());
-		
-		});
+			if(front_card.isVisible()) {
+	            double deltaX = event.getSceneX() - mouseX ;
+	            double deltaY = event.getSceneY() - mouseY ;
+	            
+	            relocate(getLayoutX() + deltaX, getLayoutY() + deltaY);
+	            mouseX = event.getSceneX() ;
+	            mouseY = event.getSceneY() ;
+            	setScaleX(calculateScaleX());
+            	setScaleY(calculateScaleY());
+			}
+         });
 	}
 	
 	void setPosition(double x, double y) {
@@ -153,14 +164,13 @@ public class CardFX extends Group {
 	private Timeline moveSemiFlipFromDeckAnimation(int k){
 		return new Timeline(
 				new KeyFrame(Duration.ZERO, new KeyValue(this.layoutXProperty(), getLayoutX())),
-				new KeyFrame(moveSemiFlipFromDeckDuration,new KeyValue(this.layoutXProperty(), getLayoutX()-1500+(120*k*scaleX)))
+				new KeyFrame(moveSemiFlipFromDeckDuration,new KeyValue(this.layoutXProperty(), 100+(120*k*scaleX)))
 				);
 	}
 	
 	public Timeline getMoveLeft(int k){
 		return moveSemiFlipFromDeckAnimation(k);
-	}
-	
+	}	
 	private Timeline shuffleCardAnimation(boolean b,int k){
 		if(!b)
 			return new Timeline(
@@ -194,6 +204,7 @@ public class CardFX extends Group {
 		System.out.println("i: "+i);
 		DoubleProperty x  = super.translateXProperty();
         DoubleProperty y  = super.translateYProperty();
+        this.scaleXProperty();
         Timeline t = new Timeline();
         switch (i) {
         //Cas Chien
@@ -203,7 +214,7 @@ public class CardFX extends Group {
     						new KeyValue(this.scaleXProperty(), getScaleX()),
     						new KeyValue(this.scaleYProperty(), getScaleY())
     						),
-    				new KeyFrame(Duration.seconds(0.5),
+    				new KeyFrame(distribDuration,
     						new KeyValue(x,200), 
     						new KeyValue(this.scaleXProperty(),
     								calculateScaleX(getLayoutX()+200,getLayoutY())), 
@@ -219,7 +230,7 @@ public class CardFX extends Group {
     						new KeyValue(this.scaleXProperty(), getScaleX()),
     						new KeyValue(this.scaleYProperty(), getScaleY())
     						),
-    				new KeyFrame(Duration.seconds(0.5), new KeyValue(y,450), 
+    				new KeyFrame(distribDuration, new KeyValue(y,450), 
     						new KeyValue(this.scaleXProperty(),
     								calculateScaleX(getLayoutX(),getLayoutY()+450)), 
     						new KeyValue(this.scaleYProperty(),
@@ -234,7 +245,7 @@ public class CardFX extends Group {
     						new KeyValue(this.scaleXProperty(), getScaleX()),
     						new KeyValue(this.scaleYProperty(), getScaleY())
     						),
-    				new KeyFrame(Duration.seconds(0.5),new KeyValue(x,-600),new KeyValue(y,100), 
+    				new KeyFrame(distribDuration,new KeyValue(x,-600),new KeyValue(y,100), 
     						new KeyValue(this.scaleXProperty(),
     								calculateScaleX(getLayoutX()-600,getLayoutY()+100)), 
     						new KeyValue(this.scaleYProperty(),
@@ -249,7 +260,7 @@ public class CardFX extends Group {
     						new KeyValue(this.scaleYProperty(), getScaleY()),
     						new KeyValue(this.scaleXProperty(), getScaleX())
     						),
-    				new KeyFrame(Duration.seconds(0.5),
+    				new KeyFrame(distribDuration,
     						new KeyValue(x,600),new KeyValue(y,100), 
     						new KeyValue(this.scaleXProperty(),
     								calculateScaleX(getLayoutX()+600,getLayoutY()+100)), 
@@ -265,7 +276,7 @@ public class CardFX extends Group {
     						new KeyValue(this.scaleYProperty(), getScaleY()),
     						new KeyValue(this.scaleXProperty(), getScaleX())
     						),
-    				new KeyFrame(Duration.seconds(0.5),new KeyValue(y,100), 
+    				new KeyFrame(distribDuration,new KeyValue(y,100), 
     						new KeyValue(this.scaleXProperty(),
     								calculateScaleX(getLayoutX(),getLayoutY()+100)), 
     						new KeyValue(this.scaleYProperty(),
@@ -279,7 +290,7 @@ public class CardFX extends Group {
 	public Timeline getShuffle(boolean b, int k){
 		return shuffleCardAnimation(b,k);
 	}
-	
+
 	private Timeline halfRotateAnimation() {
 		return new Timeline( 
                 new KeyFrame(Duration.ZERO, new KeyValue(rotateAxisY.angleProperty(), 0)), 
@@ -296,11 +307,6 @@ public class CardFX extends Group {
 	
 	public Timeline getRotateCard() {
 		return rotateCard;
-	}
-	
-	public void setHorizontal()
-	{
-		getTransforms().add(rotateAxisZ);
 	}
 	
 }

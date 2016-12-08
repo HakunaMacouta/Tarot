@@ -9,6 +9,7 @@ import controler.Action;
 import controler.Controler;
 import javafx.animation.Animation;
 import javafx.animation.SequentialTransition;
+import javafx.animation.Timeline;
 import javafx.animation.Transition;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
@@ -44,12 +45,18 @@ public class GameScene extends Scene {
 	
 	private final StackPane stackPane = new StackPane();
 	private final SubScene subScene = new SubScene(stackPane, 1600, 900, false, SceneAntialiasing.BALANCED); 
-    private final TarotButton distribButton = new TarotButton("Begin !");
-    private TarotButton backMenuButton = new TarotButton("Back to menu");
+    private final TarotButton distribButton = new TarotButton("Commencer !");
+    private final TarotButton backMenuButton = new TarotButton("Retour");
+    private final TarotButton PButton = new TarotButton("Prise ?");
+    private final TarotButton GButton = new TarotButton("Garde ?");
+    private final TarotButton SCButton = new TarotButton("Garde sans chien ?");
+    private final TarotButton CCButton = new TarotButton("Garde contre le chien ?");
+    
     private final ToolBar toolBar = new ToolBar(); 
     private final static BorderPane root = new BorderPane(); 
-    private SequentialTransition flips = new SequentialTransition();
-    private SequentialTransition moves = new SequentialTransition();
+    private SequentialTransition flip = new SequentialTransition();
+    private SequentialTransition spread = new SequentialTransition();
+    private SequentialTransition spread_n_flip = new SequentialTransition();
     private SequentialTransition distrib = new SequentialTransition();
     
     private CardFX movingCardFX;
@@ -71,28 +78,7 @@ public class GameScene extends Scene {
 	 * 
 	 */
 	private void initialize() {
-			
-		
-		/*for (Colors c : Colors.values()) {
-			System.out.println(c.toString());
-			if(c == Colors.TRUMPS){
-				for (Values v : Values.getValues(false)) {
-					System.out.println(v.toString());
-					CardFX c1 = new CardFX (v,c, 500,400-x);
-					cards.add(c1);
-					x+=1;
-				}
-			}
-			else {
-				for(Values v : Values.getValues(true)) {
-					System.out.println(v.toString());
-					CardFX c1 = new CardFX (v,c, 500,400-x);
-					cards.add(c1);
-					x+=1;
-				}
-			}
-		}*/
-		
+
 		double x = 670;
 		double y = 300;
 		for (model.Card cm : Controler.activeControler.getModel().getDeck().getCards()) {
@@ -100,11 +86,8 @@ public class GameScene extends Scene {
 			x -= 0.05;
 			y -= 0.3;
 		}
-		/** POSITION DECK JOUEUR 1436,600-x **/
 
         stackPane.getChildren().addAll(cards);
-        //stackPane.setAlignment(Pos.BASELINE_CENTER);
-        //stackPane.getChildren().addAll(ptGroup);
         stackPane.setBackground(null);
         //Toolbar
         toolBar.getItems().addAll(distribButton);
@@ -116,16 +99,7 @@ public class GameScene extends Scene {
         root.setBackground(b);
         
         subScene.setCamera(new PerspectiveCamera());
-        //scene.getStylesheets().add("https://github.com/JFXtras/jfxtras-styles/blob/master/src/jmetro/JMetroDarkTheme.css");
 
-        int k=0;
-        for(CardFX c : cards){
-        	moves.getChildren().add(c.getMoveLeft(k));
-        	flips.getChildren().add(c.getRotateCard());
-        	k++;
-        }
-        
-        //animation.setCycleCount(SequentialTransition.INDEFINITE); 
         intializingEvents();
 	}
 
@@ -176,6 +150,45 @@ public class GameScene extends Scene {
         		}
         	}
         });
+
+
+        distrib.setOnFinished(event -> {
+        	int k=0;
+            for(CardFX c : playerHand){
+            	spread_n_flip.getChildren().addAll(c.getMoveLeft(k),c.getRotateCard());
+            	k++;
+            }
+            //spread_n_flip.getChildren().addAll(spread,flip);
+            spread_n_flip.play();
+        });
+        
+        spread_n_flip.setOnFinished(event -> {
+        	toolBar.getItems().addAll(PButton,GButton,SCButton,CCButton);
+        });
+        
+        PButton.setOnAction(event -> {
+        	int k = 0;
+        	flip.getChildren().clear();
+        	spread.getChildren().clear();
+        	spread_n_flip.getChildren().clear();
+        	for(CardFX c : dogMaw) {
+        		spread.getChildren().add(c.getMoveLeft(k));
+        		flip.getChildren().add(c.getRotateCard());
+        		k++;
+        	}
+        	spread_n_flip.getChildren().addAll(spread,flip);
+        	spread_n_flip.play();
+        });
+	}
+	private Timeline SortAnimations() {
+		for(model.Card c : Controler.activeControler.getModel().getPlayer(0).getHand()) {
+			
+		}
+		List<model.Card> mc = Controler.activeControler.getModel().getPlayer(0).getHand();
+		for(int i = 0; i<mc.size();i++) {
+		}
+		return null;
+
 	}
 	
 	private boolean validDogPosition(double sourceX2, double sourceY2) {
@@ -196,15 +209,6 @@ public class GameScene extends Scene {
 			case 0:
 				playerHand.add(c);
 				//c.toFront();
-				break;
-			case 1:
-				//c.setHorizontal();
-				break;
-			case 2:
-				//c.setHorizontal();
-				break;
-			case 3:
-				
 				break;
 			}
 			//c.toFront();
