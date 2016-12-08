@@ -3,23 +3,15 @@ package vue.javafx;
 import java.util.ArrayList;
 import java.util.List;
 
-import Enums.Colors;
-import Enums.Values;
 import controler.Action;
 import controler.Controler;
-import javafx.animation.Animation;
 import javafx.animation.SequentialTransition;
 import javafx.animation.Timeline;
-import javafx.animation.Transition;
-import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.PerspectiveCamera;
 import javafx.scene.Scene;
 import javafx.scene.SceneAntialiasing;
 import javafx.scene.SubScene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonBase;
-import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToolBar;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Background;
@@ -60,10 +52,11 @@ public class GameScene extends Scene {
     private SequentialTransition distrib = new SequentialTransition();
     
     private CardFX movingCardFX;
-	private boolean isDragging;
+	private boolean isDragging=false;
 	private double sourceX;
 	private double sourceY;
 	private Object handToMaw;
+	private boolean alreadyAddedToolBarButton=false;
 	
     
 	
@@ -108,7 +101,9 @@ public class GameScene extends Scene {
 	 */
 	private void intializingEvents() {
         distribButton.setOnAction(event ->{
-        		Controler.activeControler.performAction(Action.START_DISTRUBUTION);
+        		if(Controler.activeControler.performAction(Action.START_DISTRUBUTION))
+        			System.err.println("LE PETIT EST SEC");
+        		else{
         		System.out.println("DISTRIBUTION COMMENCE");
         		//Commencer la distribution visuelle
         		toolBar.getItems().remove(distribButton);
@@ -122,6 +117,7 @@ public class GameScene extends Scene {
     	        	u++;
     	        }
     	        distrib.play();
+        		}
         });
         
         backMenuButton.setOnAction(event ->{
@@ -133,6 +129,7 @@ public class GameScene extends Scene {
         
         this.setOnMouseClicked(event ->{
         	if(event.getSource() instanceof CardFX){
+        		System.err.println("HAHA");
         		movingCardFX = (CardFX) event.getSource();
         		isDragging = true;
         		sourceX = event.getSceneX();
@@ -145,6 +142,7 @@ public class GameScene extends Scene {
         	if(isDragging){
         		isDragging = false;
         		if(validDogPosition(event.getSceneX(), event.getSceneY())){
+        			System.err.println("AJOUT AU CHIEN");
         			dogMaw.add(movingCardFX);
         			playerHand.remove(movingCardFX);
         		}
@@ -163,7 +161,13 @@ public class GameScene extends Scene {
         });
         
         spread_n_flip.setOnFinished(event -> {
+        	if(!alreadyAddedToolBarButton){
         	toolBar.getItems().addAll(PButton,GButton,SCButton,CCButton);
+        	alreadyAddedToolBarButton = true;
+        	for(CardFX c : playerHand){
+        		c.setCanMove(true);
+        	}
+        	}
         });
         
         PButton.setOnAction(event -> {

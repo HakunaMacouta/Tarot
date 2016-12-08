@@ -90,7 +90,8 @@ public class Model {
 		return distribOrder;
 	}
 	/**
-	 * @return
+	 * Une méthode
+	 * @return Une liste de tour de chien
 	 */
 	private List<Integer> randomTurnDog() {
 		int k;
