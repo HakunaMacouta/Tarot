@@ -1,14 +1,25 @@
-package controler;
+package controller;
 
 import model.Model;
 
-public class Controler {
+/**
+ * Class Controller de l'architecture MCD.
+ * Permet de lancer les actions utilisateurs.
+ * @author Thomas
+ *
+ */
+public class Controller {
 	private Model model;
-	public static Controler activeControler;
+	public static Controller activeController;
 	private static boolean isActive=false;
 	
-	
-	public Controler(Model m){
+	/**
+	 * Constructeur du controller. 
+	 * @param m
+	 * Modele, permet d'appliquer des méthodes de celui ci.
+	 * 
+	 */
+	public Controller(Model m){
 		if(isActive){
 			try {
 				this.finalize();
@@ -19,14 +30,24 @@ public class Controler {
 		{
 			this.model = m;
 			isActive= true;
-			activeControler = this;
+			activeController = this;
 		}
 	}
-	
+	/**
+	 * 
+	 * @return le modele. 
+	 */
 	public Model getModel(){
 		return model;
 	}
 	
+	/**
+	 * 
+	 * @param ac
+	 * Enum Action, permet les différentes actions utilisateur.
+	 * @return 
+	 * booleen, vrai si le petit est sec, faux sinon.
+	 */
 	public boolean performAction(Action ac){
 		boolean returned=true;
 		switch(ac){

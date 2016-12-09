@@ -1,8 +1,13 @@
-package Enums;
+package enums;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Enum de Valeur pouvant être prise par les cartes de 1 à 21 et les têtes.
+ * @author Thomas
+ *
+ */
 public enum Values {
 	ONE ("1",1),
 	TWO ("2",2),
@@ -36,6 +41,12 @@ public enum Values {
 	private String name;
 	private int power;
 	
+	/**
+	 * Constructeur de Values, affecte les deux attributs de l'enum.
+	 * @param name
+	 * Permet de définir la dénomination de cette valeur afin de lire les fichiers.
+	 * @param power
+	 */
 	Values(String name, int power) {
 		this.name = name;
 		this.power = power;
@@ -43,15 +54,22 @@ public enum Values {
 	Values(String name, String trumps) {
 		
 	}
-	
+	/**
+	 * @return retourne l'attribut name correspondant a une partie du nom du fichier.
+	 */
 	public String toString() {
 		return this.name;
 	}
-	
+	/**
+	 * @return retourne l'attribut power correspondant a la valeur de l'enum.
+	 */
 	public int getPower(){
 		return power;
 	}
-	
+	/**
+	 * @param b, booleen qui permet de définir à l'appel si la fonction retourne les valeurs d'atouts ou de couleurs
+	 * @return ArrayList<CardFX> contenant seulement les valeurs des atouts ou des couleurs.
+	 */
 	public static ArrayList<Values> getValues(boolean b) {
 		List<Values> a = new ArrayList<Values>();
 		if(b) {

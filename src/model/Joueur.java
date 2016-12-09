@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import Enums.Colors;
-import Enums.Values;
+import enums.Colors;
+import enums.Values;
 
 public class Joueur{
 	private List<Card> hand;

@@ -6,10 +6,10 @@ import java.util.Random;
 
 import org.junit.Test;
 
+import enums.Colors;
+import enums.Values;
 import model.Card;
 import model.Deck;
-import Enums.Colors;
-import Enums.Values;
 
 public class DeckTests {
 

@@ -3,8 +3,8 @@ package model;
 import java.util.ArrayList;
 import java.util.List;
 
-import Enums.Colors;
-import Enums.Values;
+import enums.Colors;
+import enums.Values;
 
 public class Chien {
 	private List<Card> maw;
