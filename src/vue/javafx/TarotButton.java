@@ -35,6 +35,9 @@ public class TarotButton extends Button {
         setOnMouseExited(event -> {
         	setStyle(buttonMenuStyle);
         });
+        setOnMouseClicked(event -> {
+        	playClickSound();
+        });
 	}
 
 	public TarotButton(String arg0) {
@@ -51,6 +54,9 @@ public class TarotButton extends Button {
 
         setOnMouseExited(event -> {
         	setStyle(buttonMenuStyle);
+        });
+        setOnMouseClicked(event -> {
+        	playClickSound();
         });
 	}
 
@@ -69,6 +75,9 @@ public class TarotButton extends Button {
         setOnMouseExited(event -> {
         	setStyle(buttonMenuStyle);
         });
+        setOnMouseClicked(event -> {
+        	playClickSound();
+        });
 	}
 
 	public TarotButton(String string, boolean b) {
@@ -85,6 +94,10 @@ public class TarotButton extends Button {
 
         setOnMouseExited(event -> {
         	setStyle(buttonMenuStyle);
+        });
+        
+        setOnMouseClicked(event -> {
+        	playClickSound();
         });
 		
 	}

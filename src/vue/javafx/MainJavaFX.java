@@ -1,7 +1,7 @@
 package vue.javafx;
 import java.util.ArrayList;
 
-import controler.Controler;
+import controller.Controller;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -10,7 +10,7 @@ import model.Model;
 
 public class MainJavaFX extends Application {
 
-	Controler controler;
+	Controller controler;
 	boolean inMenu=true;
 	
 	public static ArrayList<Scene> scenes;
@@ -24,7 +24,7 @@ public class MainJavaFX extends Application {
 		
 		scenes=new ArrayList<Scene>();
 		fenetre.setResizable(false);
-		controler = Controler.activeControler;
+		controler = Controller.activeController;
 		
 		
 		/* Menu Principal  */
@@ -47,7 +47,7 @@ public class MainJavaFX extends Application {
 
 	public static void main(String[] args) {
 		Model m = new Model();
-		Controler c = new Controler(m);
+		Controller c = new Controller(m);
 		launch(args);
 	}
 }

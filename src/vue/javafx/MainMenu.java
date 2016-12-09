@@ -105,8 +105,7 @@ public class MainMenu extends Scene {
 		//ON CLICK EVENT PLAY BUTTON
 		playButton.setOnAction(event -> {
         	boolean fc = fenetre.isFullScreen();
-			playButton.playClickSound();
-			//((GameScene) MainJavaFX.scenes.get(MainJavaFX.GAME_INDEX)).reset();
+			//playButton.playClickSound();
         	fenetre.setScene(MainJavaFX.scenes.get(MainJavaFX.GAME_INDEX));
         	if(fc)
         			fenetre.setFullScreen(true);
@@ -133,35 +132,9 @@ public class MainMenu extends Scene {
         	}
         });
 	}
-
-	public MainMenu(Parent root) {
-		super(root);
-		// TODO Auto-generated constructor stub
-	}
-
-	public MainMenu(Parent root, Paint fill) {
-		super(root, fill);
-		// TODO Auto-generated constructor stub
-	}
-
-	public MainMenu(Parent root, double width, double height) {
-		super(root, width, height);
-		// TODO Auto-generated constructor stub
-	}
-
-	public MainMenu(Parent root, double width, double height, Paint fill) {
-		super(root, width, height, fill);
-		// TODO Auto-generated constructor stub
-	}
-
-	public MainMenu(Parent root, double width, double height, boolean depthBuffer) {
-		super(root, width, height, depthBuffer);
-		// TODO Auto-generated constructor stub
-	}
-
-	public MainMenu(Parent root, double width, double height, boolean depthBuffer, SceneAntialiasing antiAliasing) {
-		super(root, width, height, depthBuffer, antiAliasing);
-		// TODO Auto-generated constructor stub
+	
+	public void reset() {
+		initialize();
 	}
 
 }

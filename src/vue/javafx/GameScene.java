@@ -3,11 +3,11 @@ package vue.javafx;
 import java.util.ArrayList;
 import java.util.List;
 
-import controler.Action;
-import controler.Controler;
 import javafx.animation.ParallelTransition;
+import controller.Action;
+import controller.Controller;
 import javafx.animation.SequentialTransition;
-import javafx.animation.Timeline;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.PerspectiveCamera;
 import javafx.scene.Scene;
@@ -15,6 +15,9 @@ import javafx.scene.SceneAntialiasing;
 import javafx.scene.SubScene;
 import javafx.scene.control.ToolBar;
 import javafx.scene.image.Image;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.TransferMode;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.BackgroundPosition;
@@ -22,6 +25,10 @@ import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.StrokeLineJoin;
+import javafx.scene.text.Text;
+import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
 
@@ -35,6 +42,9 @@ public class GameScene extends Scene {
 	private ArrayList<CardFX> cards = new ArrayList<CardFX>();
 	private ArrayList<CardFX> playerHand = new ArrayList<CardFX>();
 	private ArrayList<CardFX> dogMaw = new ArrayList<CardFX>();
+	private ArrayList<CardFX> Ecart = new ArrayList<CardFX>();
+	
+	private Rectangle DraggableZone;
 	
 	private final StackPane stackPane = new StackPane();
 	private final SubScene subScene = new SubScene(stackPane, 1600, 900, false, SceneAntialiasing.BALANCED); 
@@ -71,6 +81,7 @@ public class GameScene extends Scene {
 		super(root, 1600, 900);
 		this.fenetre = fenetre;
 		
+		initializeDragRect();
 		initialize();
 	}
 
@@ -80,16 +91,25 @@ public class GameScene extends Scene {
 	private void initialize() {
 
 		double x = 670;
-		double y = 200;
-		for (model.Card cm : Controler.activeControler.getModel().getDeck().getCards()) {
+		double y = 300;
+		for (model.Card cm : Controller.activeController.getModel().getDeck().getCards()) {
+		
 			cards.add(new CardFX(cm.getValue(),cm.getColor(),x,y));
 			x -= 0.05;
 			y -= 0.3;
 		}
-
+		
+		GButton.setDisable(true);
+		SCButton.setDisable(true);
+		CCButton.setDisable(true);
+		
+		
+		
+		
         stackPane.getChildren().addAll(cards);
         stackPane.getChildren().addAll(dogMaw);
         stackPane.getChildren().addAll(playerHand);
+        stackPane.getChildren().add(DraggableZone);
         stackPane.setBackground(null);
         //Toolbar
         toolBar.getItems().addAll(distribButton);
@@ -101,8 +121,23 @@ public class GameScene extends Scene {
         root.setBackground(b);
         
         subScene.setCamera(new PerspectiveCamera());
-
+        initializeDragRect();
         intializingEvents();
+	}
+	
+	private void initializeDragRect() {
+		DraggableZone = new Rectangle(200,400,Color.TRANSPARENT);
+		DraggableZone.setLayoutX(10);
+		DraggableZone.setLayoutY(10);
+		DraggableZone.setManaged(false);
+		DraggableZone.setStrokeLineJoin(StrokeLineJoin.ROUND);
+		DraggableZone.setStroke(Color.BLACK);
+		DraggableZone.setStrokeWidth(4);
+		DraggableZone.setVisible(false);
+		
+		DraggableZone.setOnMouseExited(event -> {
+			DraggableZone.setStroke(Color.BLACK);
+		});
 	}
 
 	/**
@@ -110,10 +145,11 @@ public class GameScene extends Scene {
 	 */
 	private void intializingEvents() {
         distribButton.setOnAction(event ->{
-        		if(Controler.activeControler.performAction(Action.START_DISTRUBUTION)){
+        	
+        		if(Controller.activeController.performAction(Action.START_DISTRUBUTION)){
         			System.err.println("LE PETIT EST SEC");
-        			Controler.activeControler.performAction(Action.SHUFFLE_DECK);
-        			Controler.activeControler.performAction(Action.START_DISTRUBUTION);
+        			Controller.activeController.performAction(Action.SHUFFLE_DECK);
+        			Controller.activeController.performAction(Action.START_DISTRUBUTION);
         			
         		}
         		else{
@@ -134,10 +170,8 @@ public class GameScene extends Scene {
         });
         
         backMenuButton.setOnAction(event ->{
-        	boolean fc = fenetre.isFullScreen();
+        	((MainMenu) MainJavaFX.scenes.get(MainJavaFX.MAIN_MENU_INDEX)).reset();
         	fenetre.setScene(MainJavaFX.scenes.get(MainJavaFX.MAIN_MENU_INDEX));
-        	if(fc)
-        		fenetre.setFullScreen(true);
         });
         
         this.setOnMouseClicked(event ->{
@@ -154,7 +188,8 @@ public class GameScene extends Scene {
         this.setOnMouseDragReleased(event ->{
         	if(isDragging){
         		isDragging = false;
-        		if(validDogPosition(event.getSceneX(), event.getSceneY())){
+        		if(DraggableZone.isHover()){
+        			System.err.println("AJOUT AU CHIEN");
         			dogMaw.add(movingCardFX);
         			playerHand.remove(movingCardFX);
         		}
@@ -212,7 +247,7 @@ public class GameScene extends Scene {
         });
         
         PButton.setOnAction(event -> {
-        	Controler.activeControler.performAction(Action.PRISE_OU_GARDE);
+        	Controller.activeController.performAction(Action.PRISE_OU_GARDE);
         	int k = 0;
         	flip.getChildren().clear();
         	spread.getChildren().clear();
@@ -224,12 +259,30 @@ public class GameScene extends Scene {
         	}
         	spread_n_flip.getChildren().addAll(spread,flip);
         	spread_n_flip.play();
+        	DraggableZone.setVisible(true);
+        	for(CardFX c : playerHand) {
+        		c.setOnDragDetected(mouseEvent -> {
+        			System.out.println("DnD");
+        			Dragboard dragBoard = c.startDragAndDrop(TransferMode.MOVE);
+        			ClipboardContent content = new ClipboardContent();
+        			dragBoard.setContent(content);
+        			
+        			
+        		});
+        	}
+        	
         });
+        DraggableZone.setOnDragDropped(dragEvent -> {
+        	CardFX c = (CardFX) dragEvent.getGestureSource();
+    		Ecart.add(c);
+    		playerHand.remove(c);
+    		System.out.println("Dragged");
+    	});
 	}
 	private void SortAnimations() {
-		Controler.activeControler.getModel().getPlayer(0).sortHand();
+		Controller.activeController.getModel().getPlayer(0).sortHand();
 		int k = 1;
-		for(model.Card c : Controler.activeControler.getModel().getPlayer(0).getHand()) {
+		for(model.Card c : Controller.activeController.getModel().getPlayer(0).getHand()) {
 			for( CardFX fx : playerHand) {
 				if(fx.getValue() == c.getValue() && fx.getColor() == c.getColor()) {
 					sort.getChildren().add(fx.sortAnimation(k));
@@ -247,7 +300,7 @@ public class GameScene extends Scene {
 	}
 
 	private void initializeDistribution() {
-		List<Integer> l = Controler.activeControler.getModel().getDistributionOrder();
+		List<Integer> l = Controller.activeController.getModel().getDistributionOrder();
 		for(int i : l) {
 			CardFX c = cards.get(cards.size()-1);
 			switch (i) {
@@ -269,39 +322,8 @@ public class GameScene extends Scene {
 			distrib.getChildren().add(c.getAnimationDistrib(i));
 		}
 	}
-	
+
 	public void reset(){
 		initialize();
 	}
-
-	public GameScene(Parent root) {
-		super(root);
-		// TODO Auto-generated constructor stub
-	}
-
-	public GameScene(Parent root, Paint fill) {
-		super(root, fill);
-		// TODO Auto-generated constructor stub
-	}
-
-	public GameScene(Parent root, double width, double height) {
-		super(root, width, height);
-		// TODO Auto-generated constructor stub
-	}
-
-	public GameScene(Parent root, double width, double height, Paint fill) {
-		super(root, width, height, fill);
-		// TODO Auto-generated constructor stub
-	}
-
-	public GameScene(Parent root, double width, double height, boolean depthBuffer) {
-		super(root, width, height, depthBuffer);
-		// TODO Auto-generated constructor stub
-	}
-
-	public GameScene(Parent root, double width, double height, boolean depthBuffer, SceneAntialiasing antiAliasing) {
-		super(root, width, height, depthBuffer, antiAliasing);
-		// TODO Auto-generated constructor stub
-	}
-
 }

@@ -117,5 +117,5 @@ public class Card implements Comparator<Card>, Comparable<Card>{
 		list.add(new Card(Colors.TRUMPS, Values.FOOL));
 		
 		return list;
-	}
+		}
 }
