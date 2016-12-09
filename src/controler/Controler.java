@@ -40,6 +40,9 @@ public class Controler {
 			model.distribution();
 			returned = model.isSmallDry();
 			break;
+		case PRISE_OU_GARDE:
+			model.addMawToPlayerHand();
+		    break;
 		default:
 			break;
 		}

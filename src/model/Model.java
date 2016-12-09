@@ -118,4 +118,12 @@ public class Model {
 	public GameState getGameState(){
 		return state;
 	}
+	
+	
+	public void addMawToPlayerHand(){
+		for(Card c : dog.getMaw()){
+			players.get(INDEX_OF_PLAYER).addCard(c);
+		}
+		dog.getMaw().clear();
+	}
 }

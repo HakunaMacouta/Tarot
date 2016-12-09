@@ -5,6 +5,7 @@ import java.util.List;
 
 import controler.Action;
 import controler.Controler;
+import javafx.animation.ParallelTransition;
 import javafx.animation.SequentialTransition;
 import javafx.animation.Timeline;
 import javafx.scene.Parent;
@@ -49,8 +50,12 @@ public class GameScene extends Scene {
     private SequentialTransition flip = new SequentialTransition();
     private SequentialTransition spread = new SequentialTransition();
     private SequentialTransition spread_n_flip = new SequentialTransition();
+    private ParallelTransition shufflePT = new ParallelTransition();
     private SequentialTransition distrib = new SequentialTransition();
     private SequentialTransition sort = new SequentialTransition();
+    private ParallelTransition pt = new ParallelTransition();
+    private SequentialTransition fusionST = new SequentialTransition();;
+
     
     private CardFX movingCardFX;
 	private boolean isDragging=false;
@@ -58,7 +63,8 @@ public class GameScene extends Scene {
 	private double sourceY;
 	private Object handToMaw;
 	private boolean alreadyAddedToolBarButton=false;
-	
+	private boolean secondSort;
+		
     
 	
 	public GameScene(Stage fenetre){
@@ -74,7 +80,7 @@ public class GameScene extends Scene {
 	private void initialize() {
 
 		double x = 670;
-		double y = 300;
+		double y = 200;
 		for (model.Card cm : Controler.activeControler.getModel().getDeck().getCards()) {
 			cards.add(new CardFX(cm.getValue(),cm.getColor(),x,y));
 			x -= 0.05;
@@ -82,6 +88,8 @@ public class GameScene extends Scene {
 		}
 
         stackPane.getChildren().addAll(cards);
+        stackPane.getChildren().addAll(dogMaw);
+        stackPane.getChildren().addAll(playerHand);
         stackPane.setBackground(null);
         //Toolbar
         toolBar.getItems().addAll(distribButton);
@@ -102,22 +110,26 @@ public class GameScene extends Scene {
 	 */
 	private void intializingEvents() {
         distribButton.setOnAction(event ->{
-        		if(Controler.activeControler.performAction(Action.START_DISTRUBUTION))
+        		if(Controler.activeControler.performAction(Action.START_DISTRUBUTION)){
         			System.err.println("LE PETIT EST SEC");
+        			Controler.activeControler.performAction(Action.SHUFFLE_DECK);
+        			Controler.activeControler.performAction(Action.START_DISTRUBUTION);
+        			
+        		}
         		else{
         		System.out.println("DISTRIBUTION COMMENCE");
         		//Commencer la distribution visuelle
         		toolBar.getItems().remove(distribButton);
-        		initializeDistribution();
         		int u=0;
     			boolean b=true;
     	        for(CardFX c : cards) {
-    	        	c.getShuffle(b,u).play();
+    	        	shufflePT.getChildren().add(c.getShuffle(b,u));
     	        	if(cards.size()/2 < u+1 && b)
     	        		b=!b;
     	        	u++;
     	        }
-    	        distrib.play();
+    	        initializeDistribution();
+    	        shufflePT.play();
         		}
         });
         
@@ -143,11 +155,14 @@ public class GameScene extends Scene {
         	if(isDragging){
         		isDragging = false;
         		if(validDogPosition(event.getSceneX(), event.getSceneY())){
-        			System.err.println("AJOUT AU CHIEN");
         			dogMaw.add(movingCardFX);
         			playerHand.remove(movingCardFX);
         		}
         	}
+        });
+        
+        shufflePT.setOnFinished(event -> {
+        	distrib.play();
         });
 
 
@@ -157,9 +172,8 @@ public class GameScene extends Scene {
             	spread_n_flip.getChildren().addAll(c.getMoveLeft(k),c.getRotateCard());
             	k++;
             }
-            SortAnimations();
             //spread_n_flip.getChildren().addAll(spread,flip);
-            spread_n_flip.getChildren().add(sort);
+            //spread_n_flip.getChildren().add(sort);
             spread_n_flip.play();
         });
         
@@ -167,13 +181,38 @@ public class GameScene extends Scene {
         	if(!alreadyAddedToolBarButton){
         	toolBar.getItems().addAll(PButton,GButton,SCButton,CCButton);
         	alreadyAddedToolBarButton = true;
-        	for(CardFX c : playerHand){
-        		c.setCanMove(true);
+            
+        	for(CardFX fx : playerHand){
+    			pt.getChildren().add(fx.reuniteAnimation());
+    		}
+    		pt.play();
+        	
+            } else {
+        		for(CardFX c : dogMaw){
+        			playerHand.add(c);
+        			pt.getChildren().add(c.reuniteAnimation());
+        		}
+        		dogMaw.clear();
+        		pt.play();
         	}
+        });
+        pt.setOnFinished(event -> {
+    		SortAnimations();
+        	sort.play();
+        });
+        
+        sort.setOnFinished(event ->{
+        	if(secondSort){
+        		for(CardFX c : playerHand){
+        			c.setCanMove(true);
+        		}
         	}
+        	else
+        		secondSort=true;
         });
         
         PButton.setOnAction(event -> {
+        	Controler.activeControler.performAction(Action.PRISE_OU_GARDE);
         	int k = 0;
         	flip.getChildren().clear();
         	spread.getChildren().clear();
@@ -188,6 +227,7 @@ public class GameScene extends Scene {
         });
 	}
 	private void SortAnimations() {
+		Controler.activeControler.getModel().getPlayer(0).sortHand();
 		int k = 1;
 		for(model.Card c : Controler.activeControler.getModel().getPlayer(0).getHand()) {
 			for( CardFX fx : playerHand) {
@@ -195,8 +235,6 @@ public class GameScene extends Scene {
 					sort.getChildren().add(fx.sortAnimation(k));
 				}
 			}
-//			System.out.println("Model : "+c.getValue().toString()+" "+c.getColor().toString());
-//			System.out.println("Vue   : "+playerHand.get(i).getValue().toString()+" "+playerHand.get(i).getColor().toString());
 			k++;
 		}
 	}
@@ -220,12 +258,18 @@ public class GameScene extends Scene {
 				playerHand.add(c);
 				//c.toFront();
 				break;
+			case 3:
+				c.toBack();
+			default:
+				
+				break;
 			}
 			//c.toFront();
 			cards.remove(c);
 			distrib.getChildren().add(c.getAnimationDistrib(i));
 		}
 	}
+	
 	public void reset(){
 		initialize();
 	}

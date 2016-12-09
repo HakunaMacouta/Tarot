@@ -55,7 +55,6 @@ public class CardFX extends Group {
 	private boolean inSoulevage;
 	private boolean mouseHasExited;
 	private boolean canMove;
-	
 	/**
 	 * <b> Card class construtor </b>
 	 * 
@@ -129,12 +128,15 @@ public class CardFX extends Group {
 		/**
 		 * 
 		 */
-		this.setOnMousePressed(event -> {
-			
+		this.setOnMousePressed(event -> {			
             mouseX = event.getSceneX() ;
             mouseY = event.getSceneY() ;
             this.toFront();
         });
+		
+		
+		this.setOnMouseReleased(enter ->{
+		});
 		
 		/**
 		 * 
@@ -152,7 +154,6 @@ public class CardFX extends Group {
 	            calculateScaleY();
             }
          });
-	
 	}
 	
 	public void setCanMove(boolean b){
@@ -264,7 +265,7 @@ public class CardFX extends Group {
 	private Timeline shuffleCardAnimation(boolean b,int k){
 		if(!b)
 			return new Timeline(
-					new KeyFrame(Duration.ZERO/*, new KeyValue(this.layoutXProperty(), getLayoutX())*/,
+					new KeyFrame(Duration.ZERO, new KeyValue(this.layoutXProperty(), getLayoutX()),
 							new KeyValue(this.layoutYProperty(),getLayoutY())),
 					new KeyFrame(Duration.millis(500), new KeyValue(this.layoutYProperty(),getLayoutY()-100),new KeyValue(this.layoutXProperty(), getLayoutX())),
 					new KeyFrame(Duration.millis(1200), new KeyValue(this.layoutYProperty(),getLayoutY()+30), new KeyValue(this.layoutXProperty(), getLayoutX())),
@@ -311,16 +312,16 @@ public class CardFX extends Group {
         //Cas Chien
         case -1:
         	t = new Timeline(
-    				new KeyFrame(Duration.ZERO,new KeyValue(x,0),
+    				new KeyFrame(Duration.ZERO,new KeyValue(x,0),new KeyValue(y,0),
     						new KeyValue(this.scaleXProperty(), getScaleX()),
     						new KeyValue(this.scaleYProperty(), getScaleY())
     						),
     				new KeyFrame(distribDuration,
-    						new KeyValue(x,200), 
+    						new KeyValue(x,200), new KeyValue(y,50), 
     						new KeyValue(this.scaleXProperty(),
-    								calculateScaleX(getLayoutX()+200,getLayoutY())), 
+    								calculateScaleX(getLayoutX()+200,getLayoutY()+50)), 
     						new KeyValue(this.scaleYProperty(),
-    								calculateScaleY(getLayoutX()+200, getLayoutY()))
+    								calculateScaleY(getLayoutX()+200, getLayoutY()+50))
     						)
     		);
         	break;
@@ -381,11 +382,11 @@ public class CardFX extends Group {
     						new KeyValue(this.scaleYProperty(), getScaleY()),
     						new KeyValue(this.scaleXProperty(), getScaleX())
     						),
-    				new KeyFrame(distribDuration,new KeyValue(y,100), 
+    				new KeyFrame(distribDuration,new KeyValue(y,-50), 
     						new KeyValue(this.scaleXProperty(),
-    								calculateScaleX(getLayoutX(),getLayoutY()+100)), 
+    								calculateScaleX(getLayoutX(),getLayoutY()-50)), 
     						new KeyValue(this.scaleYProperty(),
-    								calculateScaleY(getLayoutX(),getLayoutY()+100))
+    								calculateScaleY(getLayoutX(),getLayoutY()-50))
     						)
     		);
         	break;
@@ -443,12 +444,7 @@ public class CardFX extends Group {
 				new KeyFrame(Duration.millis(501), actionEvent ->{
 					desoulevageDoing = false;
 					inSoulevage = false;
-					mouseHasExited = false;/*
-					double vx = getLayoutX();
-					double vy = getLayoutY();
-					
-					setScaleX(calculateScaleX(vx,vy));
-					setScaleY(calculateScaleY(vx,vy));*/
+					mouseHasExited = false;
 				})
 				);
 	}
@@ -459,9 +455,31 @@ public class CardFX extends Group {
 
 	
 	public Timeline sortAnimation(int k) {
+		this.toFront();
 		return new Timeline(
-				new KeyFrame(Duration.ZERO, new KeyValue(super.layoutXProperty(),0)),
-				new KeyFrame(Duration.millis(800), new KeyValue(super.layoutXProperty(),(k*50))));
+				new KeyFrame(Duration.ZERO, new KeyValue(layoutXProperty(),getLayoutX()),
+						new KeyValue(layoutYProperty(), getLayoutY())),
+				new KeyFrame(Duration.millis(500), new KeyValue(layoutXProperty(),-80+(80*k)),
+						new KeyValue(layoutYProperty(), 100))
+				);
+	}
+	
+	public Timeline fusionAnimation(int k) {
+		this.toFront();
+		return new Timeline(
+				new KeyFrame(Duration.ZERO, new KeyValue(layoutXProperty(),getLayoutX()),
+						new KeyValue(layoutYProperty(), getLayoutY())),
+				new KeyFrame(Duration.millis(500), new KeyValue(layoutXProperty(),(80*(k-3))),
+						new KeyValue(layoutYProperty(), 600))
+				);
+	}
+
+	public Timeline reuniteAnimation() {
+		return new Timeline(
+				new KeyFrame(Duration.millis(700),
+						new KeyValue(layoutXProperty(), 768),
+						new KeyValue(layoutYProperty(), 300))
+				);
 	}
 	
 }
