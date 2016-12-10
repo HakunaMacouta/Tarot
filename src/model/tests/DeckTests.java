@@ -1,3 +1,4 @@
+/* VAIN BLANC S3C */
 package model.tests;
 
 import static org.junit.Assert.*;

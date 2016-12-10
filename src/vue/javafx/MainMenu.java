@@ -1,3 +1,4 @@
+/* VAIN BLANC S3C */
 package vue.javafx;
 
 import java.io.File;
@@ -131,10 +132,6 @@ public class MainMenu extends Scene {
         		System.err.println(eestr);
         	}
         });
-	}
-	
-	public void reset() {
-		initialize();
 	}
 
 }

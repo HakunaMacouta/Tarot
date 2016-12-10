@@ -1,3 +1,4 @@
+/* VAIN BLANC S3C */
 package model;
 
 public enum GameState {

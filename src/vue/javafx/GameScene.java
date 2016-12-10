@@ -1,3 +1,5 @@
+
+/* VAIN BLANC S3C */
 package vue.javafx;
 
 import java.util.ArrayList;
@@ -74,6 +76,7 @@ public class GameScene extends Scene {
 	private Object handToMaw;
 	private boolean alreadyAddedToolBarButton=false;
 	private boolean secondSort;
+	private CardFX carteReference;
 		
     
 	
@@ -109,7 +112,8 @@ public class GameScene extends Scene {
         stackPane.getChildren().addAll(cards);
         stackPane.getChildren().addAll(dogMaw);
         stackPane.getChildren().addAll(playerHand);
-        stackPane.getChildren().add(DraggableZone);
+        stackPane.getChildren().addAll(DraggableZone);
+        //stackPane.getChildren().add(DraggableZone);
         stackPane.setBackground(null);
         //Toolbar
         toolBar.getItems().addAll(distribButton);
@@ -121,22 +125,34 @@ public class GameScene extends Scene {
         root.setBackground(b);
         
         subScene.setCamera(new PerspectiveCamera());
-        initializeDragRect();
+        //initializeDragRect();
         intializingEvents();
 	}
 	
 	private void initializeDragRect() {
-		DraggableZone = new Rectangle(200,400,Color.TRANSPARENT);
+		DraggableZone = new Rectangle(400,200,new Color(0,0,0,0.4));
 		DraggableZone.setLayoutX(10);
 		DraggableZone.setLayoutY(10);
 		DraggableZone.setManaged(false);
 		DraggableZone.setStrokeLineJoin(StrokeLineJoin.ROUND);
 		DraggableZone.setStroke(Color.BLACK);
-		DraggableZone.setStrokeWidth(4);
-		DraggableZone.setVisible(false);
+		DraggableZone.setStrokeWidth(2);
+		DraggableZone.setVisible(true);
 		
 		DraggableZone.setOnMouseExited(event -> {
 			DraggableZone.setStroke(Color.BLACK);
+		});
+		
+		DraggableZone.setOnMouseEntered(event -> {
+			DraggableZone.setStroke(Color.WHITE);
+		});
+		
+		DraggableZone.setOnDragDropped(event ->{
+			System.out.println("pomm");
+			if(event.getGestureSource() instanceof CardFX){
+				CardFX c = (CardFX)event.getGestureSource();
+				System.out.println(c.getColor());
+			}
 		});
 	}
 
@@ -144,7 +160,30 @@ public class GameScene extends Scene {
 	 * 
 	 */
 	private void intializingEvents() {
-        distribButton.setOnAction(event ->{
+        
+		/**
+		 * Mouse event
+		 *//*
+		this.setOnMouseClicked(event ->{
+        	if(event.getSource() instanceof CardFX){
+        		System.err.println("HAHA");
+        		movingCardFX = (CardFX) event.getSource();
+        		isDragging = true;
+        		sourceX = event.getSceneX();
+        		sourceY = event.getSceneY();
+        		handToMaw = !validDogPosition(sourceX, sourceY);
+        	}
+        });*/
+		
+		buttonsEvents();
+        animationsEvents();
+	}
+
+	/**
+	 * 
+	 */
+	private void buttonsEvents() {
+		distribButton.setOnAction(event ->{
         	
         		if(Controller.activeController.performAction(Action.START_DISTRUBUTION)){
         			System.err.println("LE PETIT EST SEC");
@@ -170,80 +209,7 @@ public class GameScene extends Scene {
         });
         
         backMenuButton.setOnAction(event ->{
-        	((MainMenu) MainJavaFX.scenes.get(MainJavaFX.MAIN_MENU_INDEX)).reset();
         	fenetre.setScene(MainJavaFX.scenes.get(MainJavaFX.MAIN_MENU_INDEX));
-        });
-        
-        this.setOnMouseClicked(event ->{
-        	if(event.getSource() instanceof CardFX){
-        		System.err.println("HAHA");
-        		movingCardFX = (CardFX) event.getSource();
-        		isDragging = true;
-        		sourceX = event.getSceneX();
-        		sourceY = event.getSceneY();
-        		handToMaw = !validDogPosition(sourceX, sourceY);
-        	}
-        });
-        
-        this.setOnMouseDragReleased(event ->{
-        	if(isDragging){
-        		isDragging = false;
-        		if(DraggableZone.isHover()){
-        			System.err.println("AJOUT AU CHIEN");
-        			dogMaw.add(movingCardFX);
-        			playerHand.remove(movingCardFX);
-        		}
-        	}
-        });
-        
-        shufflePT.setOnFinished(event -> {
-        	distrib.play();
-        });
-
-
-        distrib.setOnFinished(event -> {
-        	int k=0;
-            for(CardFX c : playerHand){
-            	spread_n_flip.getChildren().addAll(c.getMoveLeft(k),c.getRotateCard());
-            	k++;
-            }
-            //spread_n_flip.getChildren().addAll(spread,flip);
-            //spread_n_flip.getChildren().add(sort);
-            spread_n_flip.play();
-        });
-        
-        spread_n_flip.setOnFinished(event -> {
-        	if(!alreadyAddedToolBarButton){
-        	toolBar.getItems().addAll(PButton,GButton,SCButton,CCButton);
-        	alreadyAddedToolBarButton = true;
-            
-        	for(CardFX fx : playerHand){
-    			pt.getChildren().add(fx.reuniteAnimation());
-    		}
-    		pt.play();
-        	
-            } else {
-        		for(CardFX c : dogMaw){
-        			playerHand.add(c);
-        			pt.getChildren().add(c.reuniteAnimation());
-        		}
-        		dogMaw.clear();
-        		pt.play();
-        	}
-        });
-        pt.setOnFinished(event -> {
-    		SortAnimations();
-        	sort.play();
-        });
-        
-        sort.setOnFinished(event ->{
-        	if(secondSort){
-        		for(CardFX c : playerHand){
-        			c.setCanMove(true);
-        		}
-        	}
-        	else
-        		secondSort=true;
         });
         
         PButton.setOnAction(event -> {
@@ -257,35 +223,97 @@ public class GameScene extends Scene {
         		flip.getChildren().add(c.getRotateCard());
         		k++;
         	}
+        	toolBar.getItems().remove(PButton);
+        	toolBar.getItems().remove(GButton);
+        	toolBar.getItems().remove(SCButton);
+        	toolBar.getItems().remove(CCButton);
+        	
+        	
         	spread_n_flip.getChildren().addAll(spread,flip);
         	spread_n_flip.play();
         	DraggableZone.setVisible(true);
-        	for(CardFX c : playerHand) {
-        		c.setOnDragDetected(mouseEvent -> {
-        			System.out.println("DnD");
-        			Dragboard dragBoard = c.startDragAndDrop(TransferMode.MOVE);
-        			ClipboardContent content = new ClipboardContent();
-        			dragBoard.setContent(content);
-        			
-        			
-        		});
+        });
+	}
+
+	/**
+	 * 
+	 */
+	private void animationsEvents() {
+		shufflePT.setOnFinished(event -> {
+        	distrib.play();
+        });
+
+
+        distrib.setOnFinished(event -> {
+        	int k=0;
+            for(CardFX c : playerHand){
+            	spread_n_flip.getChildren().addAll(c.getMoveLeft(k),c.getRotateCard());
+            	k++;
+            }
+            spread_n_flip.play();
+        });
+        
+        spread_n_flip.setOnFinished(event -> {
+        	if(!alreadyAddedToolBarButton){
+
+            	for(CardFX fx : playerHand){
+        			pt.getChildren().add(fx.reuniteAnimation());
+        		}
+        		pt.play();
+        		
+        	
+            } else {
+            	pt.getChildren().clear();
+            	carteReference = playerHand.get(0);
+            	for(CardFX fx : playerHand){
+        			pt.getChildren().add(fx.reuniteAnimation());
+        		}
+        		for(CardFX c : dogMaw){
+        			playerHand.add(c);
+        			pt.getChildren().add(c.reuniteChienAnimation());
+        		}
+        		pt.play();
+        	}
+        });
+        
+        pt.setOnFinished(event -> {
+        	if(alreadyAddedToolBarButton){
+        	
+            	for(CardFX c : dogMaw){
+            		c.setUltraScale(carteReference.getScaleX(), carteReference.getScaleY());
+            	}
+            	
         	}
         	
+        	System.out.println("OUT");
+    		SortAnimations();
+        	sort.play();
         });
-        DraggableZone.setOnDragDropped(dragEvent -> {
-        	CardFX c = (CardFX) dragEvent.getGestureSource();
-    		Ecart.add(c);
-    		playerHand.remove(c);
-    		System.out.println("Dragged");
-    	});
+        
+        sort.setOnFinished(event ->{
+        	if(secondSort){
+        		for(CardFX c : playerHand){
+        			c.setCanMove(true);
+        		}
+        	}
+        	else{
+        		secondSort=true;
+        		toolBar.getItems().addAll(PButton,GButton,SCButton,CCButton);
+            	alreadyAddedToolBarButton = true; 
+        	}
+        });
 	}
+	
+	
 	private void SortAnimations() {
+		System.out.println("HEHEH");
+		sort.getChildren().clear();
 		Controller.activeController.getModel().getPlayer(0).sortHand();
 		int k = 1;
 		for(model.Card c : Controller.activeController.getModel().getPlayer(0).getHand()) {
 			for( CardFX fx : playerHand) {
 				if(fx.getValue() == c.getValue() && fx.getColor() == c.getColor()) {
-					sort.getChildren().add(fx.sortAnimation(k));
+					sort.getChildren().add(fx.sortAnimation(k, playerHand.size()));
 				}
 			}
 			k++;
@@ -306,6 +334,7 @@ public class GameScene extends Scene {
 			switch (i) {
 			case -1:
 				dogMaw.add(c);
+				c.isFromDog();
 				break;
 			case 0:
 				playerHand.add(c);
@@ -322,7 +351,7 @@ public class GameScene extends Scene {
 			distrib.getChildren().add(c.getAnimationDistrib(i));
 		}
 	}
-
+	
 	public void reset(){
 		initialize();
 	}

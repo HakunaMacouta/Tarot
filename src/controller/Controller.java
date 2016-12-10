@@ -1,3 +1,4 @@
+/* VAIN BLANC S3C */
 package controller;
 
 import model.Model;

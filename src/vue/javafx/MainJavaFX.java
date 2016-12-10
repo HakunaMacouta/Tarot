@@ -1,3 +1,5 @@
+/* VAIN BLANC S3C */
+
 package vue.javafx;
 import java.util.ArrayList;
 
@@ -38,7 +40,7 @@ public class MainJavaFX extends Application {
 		scenes.add(gameScene);
 		
 		
-		fenetre.setTitle("Dishonored Tarot");
+		fenetre.setTitle("Dishonored Tarot - VAIN BLANC S3C");
         fenetre.setScene(menuScene);
         fenetre.getIcons().add(new Image("file:./ressources/Tarot_faticon.png"));
         fenetre.show();
@@ -50,4 +52,5 @@ public class MainJavaFX extends Application {
 		Controller c = new Controller(m);
 		launch(args);
 	}
+
 }

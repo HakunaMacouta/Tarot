@@ -1,3 +1,4 @@
+/* VAIN BLANC S3C */
 package model.tests;
 
 import static org.junit.Assert.*;
@@ -89,36 +90,6 @@ public class JoueurTest {
 		j.addCard(new Card(Colors.TRUMPS, Values.ONE));
 		
 		if(!j.isSmallDry())
-			fail();
-		
-	}
-	
-	@Test
-	public void testSortingPlayerHand(){
-		Joueur j = new Joueur();
-		
-		j.addCard(new Card(Colors.HEARTS, Values.THREE));
-		j.addCard(new Card(Colors.HEARTS, Values.FOUR));
-		j.addCard(new Card(Colors.SPADES, Values.ACE));
-		j.addCard(new Card(Colors.SPADES, Values.KING));
-		j.addCard(new Card(Colors.DIAMONDS, Values.KING));
-		j.addCard(new Card(Colors.TRUMPS, Values.EIGHT));
-		j.addCard(new Card(Colors.TRUMPS, Values.THREE));
-		j.addCard(new Card(Colors.TRUMPS, Values.FIVE));
-		j.addCard(new Card(Colors.TRUMPS, Values.FOOL));
-		
-		Collections.shuffle(j.getHand());
-		
-		j.sortHand();
-		
-		if(j.getHand().get(j.getHand().size()-1).getColor()==Colors.TRUMPS 
-				&& j.getHand().get(j.getHand().size()-1).getValue()==Values.FOOL
-				&& j.getHand().get(0).getColor()==Colors.DIAMONDS
-				&& j.getHand().get(0).getValue()==Values.KING
-				&& j.getHand().get(4).getColor()==Colors.SPADES
-				&& j.getHand().get(4).getValue()==Values.KING){
-		}
-		else
 			fail();
 		
 	}
